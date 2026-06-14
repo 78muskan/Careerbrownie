@@ -1,0 +1,67 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: margveda_postgres
+    environment:
+      POSTGRES_DB: margveda
+      POSTGRES_USER: margveda
+      POSTGRES_PASSWORD: margveda_password
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U margveda -d margveda"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  ai_service:
+    build:
+      context: ./ai_service
+    container_name: margveda_ai_service
+    ports:
+      - "9000:9000"
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:9000/health')"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+
+  backend:
+    build:
+      context: ./backend
+    container_name: margveda_backend
+    environment:
+      PROJECT_NAME: MargVedA API
+      VERSION: 1.0.0
+      ENVIRONMENT: docker
+      API_V1_PREFIX: /api/v1
+      DATABASE_URL: postgresql+psycopg2://margveda:margveda_password@postgres:5432/margveda
+      AI_SERVICE_URL: http://ai_service:9000
+      SECRET_KEY: replace-this-with-a-long-random-secret
+      JWT_ALGORITHM: HS256
+      ACCESS_TOKEN_EXPIRE_MINUTES: 1440
+      BACKEND_CORS_ORIGINS: http://localhost:3000,http://127.0.0.1:3000,http://localhost:3001,http://127.0.0.1:3001
+    ports:
+      - "8000:8000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      ai_service:
+        condition: service_started
+
+  frontend:
+    build:
+      context: ./frontend
+    container_name: margveda_frontend
+    environment:
+      BACKEND_API_URL: http://backend:8000/api/v1
+    ports:
+      - "3000:3000"
+      - "3001:3001"
+    depends_on:
+      - backend
+
+volumes:
+  postgres_data:
