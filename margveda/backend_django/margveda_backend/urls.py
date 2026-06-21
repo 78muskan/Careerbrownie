@@ -2,7 +2,8 @@ from django.contrib import admin
 from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 
 admin.site.site_header = "MargVedA Admin"
@@ -11,13 +12,51 @@ admin.site.index_title = "Career Intelligence Platform — Admin"
 
 
 @api_view(["GET"])
+@permission_classes([AllowAny])
 def health_check(request):
     return Response({"status": "ok", "service": "MargVedA Backend"})
+
+
+@api_view(["GET"])
+@permission_classes([AllowAny])
+def api_root(request):
+    base = request.build_absolute_uri("/api/v1/")
+    return Response({
+        "service": "MargVedA API v1",
+        "status": "ok",
+        "endpoints": {
+            "health":           f"{base}health/",
+            "auth": {
+                "register":     f"{base}auth/register/",
+                "login":        f"{base}auth/login/",
+                "logout":       f"{base}auth/logout/",
+                "me":           f"{base}auth/me/",
+                "token_refresh":f"{base}auth/token/refresh/",
+            },
+            "student":          f"{base}student/",
+            "sessions":         f"{base}sessions/",
+            "counsellors":      f"{base}counsellors/",
+            "university_partners": f"{base}university-partners/",
+            "ai":               f"{base}ai/",
+            "blog":             f"{base}blog/",
+            "leads":            f"{base}leads/",
+            "notifications":    f"{base}notifications/",
+            "portal":           f"{base}portal/",
+            "resume":           f"{base}resume/",
+            "interview":        f"{base}interview/",
+            "universities":     f"{base}universities/",
+            "predictor":        f"{base}predictor/",
+            "school":           f"{base}school/",
+            "jobs":             f"{base}jobs/",
+            "enterprise":       f"{base}enterprise/",
+        },
+    })
 
 
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("api/v1/health/", health_check, name="health"),
+    path("api/v1/", api_root, name="api-root"),
     path("api/v1/leads/", include("leads.urls")),
     path("api/v1/blog/", include("blog.urls")),
     path("api/v1/", include("counsellors.urls")),

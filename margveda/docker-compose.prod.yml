@@ -1,0 +1,135 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: margveda_postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-margveda}
+      POSTGRES_USER: ${POSTGRES_USER:-margveda}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-margveda} -d ${POSTGRES_DB:-margveda}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:7-alpine
+    container_name: margveda_redis
+    restart: unless-stopped
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 3
+
+  ai_service:
+    build:
+      context: ./ai_service
+      dockerfile: Dockerfile
+    container_name: margveda_ai
+    restart: unless-stopped
+    expose:
+      - "9000"
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:9000/health')"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+
+  django:
+    build:
+      context: ./backend_django
+      dockerfile: Dockerfile
+    container_name: margveda_django
+    restart: unless-stopped
+    environment:
+      SECRET_KEY: ${SECRET_KEY}
+      DEBUG: "False"
+      ALLOWED_HOSTS: ${DOMAIN},www.${DOMAIN},localhost
+      DB_ENGINE: django.db.backends.postgresql
+      POSTGRES_DB: ${POSTGRES_DB:-margveda}
+      POSTGRES_USER: ${POSTGRES_USER:-margveda}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_HOST: postgres
+      POSTGRES_PORT: "5432"
+      REDIS_URL: redis://redis:6379/0
+      FRONTEND_URL: https://${DOMAIN}
+      EMAIL_HOST: ${EMAIL_HOST:-smtp.gmail.com}
+      EMAIL_PORT: ${EMAIL_PORT:-587}
+      EMAIL_HOST_USER: ${EMAIL_HOST_USER:-}
+      EMAIL_HOST_PASSWORD: ${EMAIL_HOST_PASSWORD:-}
+      DEFAULT_FROM_EMAIL: ${DEFAULT_FROM_EMAIL:-MargVedA <hello@margveda.com>}
+      GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID:-}
+      GOOGLE_CLIENT_SECRET: ${GOOGLE_CLIENT_SECRET:-}
+    expose:
+      - "8001"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    command: >
+      sh -c "python manage.py migrate --noinput &&
+             python manage.py collectstatic --noinput &&
+             gunicorn margveda_backend.wsgi:application --bind 0.0.0.0:8001 --workers 3"
+
+  celery:
+    build:
+      context: ./backend_django
+      dockerfile: Dockerfile
+    container_name: margveda_celery
+    restart: unless-stopped
+    environment:
+      SECRET_KEY: ${SECRET_KEY}
+      REDIS_URL: redis://redis:6379/0
+      POSTGRES_HOST: postgres
+      POSTGRES_DB: ${POSTGRES_DB:-margveda}
+      POSTGRES_USER: ${POSTGRES_USER:-margveda}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    depends_on:
+      redis:
+        condition: service_healthy
+      postgres:
+        condition: service_healthy
+    command: celery -A margveda_backend worker -l info
+
+  frontend:
+    build:
+      context: ./frontend-next
+      dockerfile: Dockerfile
+      args:
+        NEXT_PUBLIC_API_URL: https://${DOMAIN}/api/v1
+        NEXT_PUBLIC_APP_URL: https://${DOMAIN}
+    container_name: margveda_frontend
+    restart: unless-stopped
+    expose:
+      - "3000"
+    depends_on:
+      - django
+
+  nginx:
+    image: nginx:1.27-alpine
+    container_name: margveda_nginx
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx.prod.conf:/etc/nginx/nginx.conf:ro
+      - ./ssl:/etc/nginx/ssl:ro
+      - static_files:/app/staticfiles:ro
+      - media_files:/app/media:ro
+    depends_on:
+      - django
+      - frontend
+
+volumes:
+  postgres_data:
+  redis_data:
+  static_files:
+  media_files:

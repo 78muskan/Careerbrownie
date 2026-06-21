@@ -1,6 +1,5 @@
 from sqlalchemy import Boolean, Column, DateTime, Integer, String, func
 from sqlalchemy.orm import relationship
-from sqlalchemy.orm import relationship
 
 from app.core.database import Base
 
@@ -43,34 +42,6 @@ class User(Base):
         "GuidanceSession",
         back_populates="counsellor",
         foreign_keys="GuidanceSession.counsellor_id",
-    )
-    roadmaps = relationship(
-        "CareerRoadmap",
-        back_populates="student",
-        cascade="all, delete-orphan",
-    )
-
-    student_profile = relationship(
-        "Student",
-        back_populates="user",
-        uselist=False,
-        cascade="all, delete-orphan",
-    )
-    counsellor_profile = relationship(
-        "Counsellor",
-        back_populates="user",
-        uselist=False,
-        cascade="all, delete-orphan",
-    )
-    booked_sessions = relationship(
-        "SessionBooking",
-        foreign_keys="SessionBooking.student_id",
-        back_populates="student",
-    )
-    assigned_sessions = relationship(
-        "SessionBooking",
-        foreign_keys="SessionBooking.counsellor_id",
-        back_populates="counsellor",
     )
     roadmaps = relationship(
         "CareerRoadmap",

@@ -41,8 +41,6 @@ class Settings:
         self.ACCESS_TOKEN_EXPIRE_MINUTES = int(
             os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES", "1440")
         )
-        self.AI_SERVICE_URL = os.getenv("AI_SERVICE_URL", "http://ai_service:8001")
-        self.ENVIRONMENT = os.getenv("ENVIRONMENT", "development")
         self.BACKEND_CORS_ORIGINS = _parse_cors_origins(
             os.getenv(
                 "BACKEND_CORS_ORIGINS",

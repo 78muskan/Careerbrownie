@@ -87,24 +87,32 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "margveda_backend.wsgi.application"
 
-DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
-    }
-}
+_DATABASE_URL = os.getenv("DATABASE_URL", "")
 
-# PostgreSQL (uncomment for production):
-# DATABASES = {
-#     "default": {
-#         "ENGINE": "django.db.backends.postgresql",
-#         "NAME": os.getenv("DB_NAME", "margveda"),
-#         "USER": os.getenv("DB_USER", "postgres"),
-#         "PASSWORD": os.getenv("DB_PASSWORD", ""),
-#         "HOST": os.getenv("DB_HOST", "localhost"),
-#         "PORT": os.getenv("DB_PORT", "5432"),
-#     }
-# }
+if _DATABASE_URL.startswith("postgres"):
+    import urllib.parse as _up
+    _u = _up.urlparse(_DATABASE_URL)
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.postgresql",
+            "NAME": _u.path.lstrip("/"),
+            "USER": _u.username or "",
+            "PASSWORD": _u.password or "",
+            "HOST": _u.hostname or "localhost",
+            "PORT": str(_u.port or 5432),
+        }
+    }
+elif _DATABASE_URL.startswith("sqlite"):
+    import urllib.parse as _up
+    _path = _DATABASE_URL.replace("sqlite:///", "")
+    DATABASES = {"default": {"ENGINE": "django.db.backends.sqlite3", "NAME": _path}}
+else:
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.sqlite3",
+            "NAME": BASE_DIR / "db.sqlite3",
+        }
+    }
 
 AUTH_PASSWORD_VALIDATORS = [
     {"NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator"},
