@@ -1,0 +1,31 @@
+# Git
+.git
+.gitignore
+
+# Node
+margveda/frontend-next/node_modules
+margveda/frontend-next/.next
+margveda/frontend-next/.vercel
+
+# Python
+**/__pycache__
+**/*.pyc
+**/*.pyo
+**/.venv
+**/venv
+ragenv
+**/*.egg-info
+
+# Local env files
+**/.env
+**/.env.local
+**/.env.*.local
+
+# DB / media
+margveda/backend_django/db.sqlite3
+margveda/backend_django/media
+
+# Docs / misc
+margveda/HANDBOOK.md
+margveda/CareerBrownie_Engineering_Handbook.pdf
+weather.py
