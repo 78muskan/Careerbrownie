@@ -30,7 +30,7 @@ export default function TestimonialsSection() {
             <span className="text-gradient">Dream Careers</span>
           </h2>
           <p className="text-slate-500 max-w-xl mx-auto">
-            Real stories from real students — see how MargVedA transformed their career journeys.
+            Real stories from real students — see how Career Brownie transformed their career journeys.
           </p>
         </motion.div>
 

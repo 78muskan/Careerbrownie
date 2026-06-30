@@ -40,8 +40,8 @@ def _send_verification_email(user, request):
     )
     verify_url = f"{settings.FRONTEND_URL}/verify-email?token={token.token}"
     send_mail(
-        subject="Verify your MargVedA email",
-        message=f"Hi {user.full_name},\n\nVerify your email:\n{verify_url}\n\nExpires in 24 hours.\n\n— MargVedA",
+        subject="Verify your Career Brownie email",
+        message=f"Hi {user.full_name},\n\nVerify your email:\n{verify_url}\n\nExpires in 24 hours.\n\n— Career Brownie",
         from_email=settings.DEFAULT_FROM_EMAIL,
         recipient_list=[user.email],
         fail_silently=True,
@@ -160,8 +160,8 @@ class ForgotPasswordView(APIView):
             )
             reset_url = f"{settings.FRONTEND_URL}/reset-password?token={token.token}"
             send_mail(
-                subject="Reset your MargVedA password",
-                message=f"Hi {user.full_name},\n\nReset your password:\n{reset_url}\n\nExpires in 2 hours.\n\n— MargVedA",
+                subject="Reset your Career Brownie password",
+                message=f"Hi {user.full_name},\n\nReset your password:\n{reset_url}\n\nExpires in 2 hours.\n\n— Career Brownie",
                 from_email=settings.DEFAULT_FROM_EMAIL,
                 recipient_list=[user.email],
                 fail_silently=True,

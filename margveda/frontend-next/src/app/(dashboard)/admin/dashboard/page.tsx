@@ -34,7 +34,7 @@ export default function AdminDashboardPage() {
       <div className="bg-blue-50 border border-blue-100 rounded-2xl p-6">
         <p className="text-blue-800 font-medium">Full admin management is available at the Django admin panel.</p>
         <a href="http://localhost:8000/admin/" target="_blank" rel="noopener noreferrer" className="mt-2 inline-block text-blue-600 text-sm hover:underline">
-          Open Django Admin → admin@margveda.com / Admin@1234
+          Open Django Admin → admin@careerbrownie.com / Admin@1234
         </a>
       </div>
     </div>

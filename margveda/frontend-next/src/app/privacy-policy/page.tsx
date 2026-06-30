@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Privacy Policy — MargVedA",
-  description: "MargVedA's privacy policy explaining how we collect, use, and protect your personal data.",
+  title: "Privacy Policy — Career Brownie",
+  description: "Career Brownie's privacy policy explaining how we collect, use, and protect your personal data.",
 };
 
 export default function PrivacyPolicyPage() {
@@ -36,7 +36,7 @@ export default function PrivacyPolicyPage() {
             },
             {
               title: "5. Your Rights",
-              content: "Under applicable Indian data protection laws, you have the right to: access your personal data; correct inaccurate data; request deletion of your data; withdraw consent for marketing; and file a complaint with regulators. To exercise these rights, email us at privacy@margveda.com.",
+              content: "Under applicable Indian data protection laws, you have the right to: access your personal data; correct inaccurate data; request deletion of your data; withdraw consent for marketing; and file a complaint with regulators. To exercise these rights, email us at privacy@careerbrownie.com.",
             },
             {
               title: "6. Cookies",
@@ -44,7 +44,7 @@ export default function PrivacyPolicyPage() {
             },
             {
               title: "7. Contact",
-              content: "For privacy-related queries, contact our Data Protection Officer at privacy@margveda.com or write to: MargVedA Privacy Team, Koramangala, Bengaluru, Karnataka 560034.",
+              content: "For privacy-related queries, contact our Data Protection Officer at privacy@careerbrownie.com or write to: Career Brownie Privacy Team, Koramangala, Bengaluru, Karnataka 560034.",
             },
           ].map((section) => (
             <div key={section.title}>

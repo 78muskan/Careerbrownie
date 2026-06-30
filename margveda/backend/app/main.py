@@ -21,7 +21,7 @@ def create_app() -> FastAPI:
     app = FastAPI(
         title=settings.PROJECT_NAME,
         version=settings.VERSION,
-        description="Backend API for MargVedA AI career counselling platform.",
+        description="Backend API for Career Brownie AI career counselling platform.",
     )
 
     app.add_middleware(
@@ -43,7 +43,7 @@ def create_app() -> FastAPI:
     @app.get("/")
     def root():
         return {
-            "message": "Welcome to MargVedA Backend",
+            "message": "Welcome to Career Brownie Backend",
             "docs": "/docs",
             "health": "/health",
         }

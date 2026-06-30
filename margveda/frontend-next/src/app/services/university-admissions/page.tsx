@@ -3,7 +3,7 @@ import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 
 export const metadata: Metadata = {
-  title: "University Admissions Consulting — MargVedA",
+  title: "University Admissions Consulting — Career Brownie",
   description: "Expert guidance for IIT, NIT, IIM, and top university admissions. SOP writing, application review, interview prep, and more.",
 };
 

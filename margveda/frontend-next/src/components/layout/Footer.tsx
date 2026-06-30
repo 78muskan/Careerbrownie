@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import { Mail, Phone, MapPin, Globe, ExternalLink } from "lucide-react";
 import { CONTACT_EMAIL, CONTACT_PHONE, SOCIAL_LINKS } from "@/lib/constants";
 
@@ -45,7 +46,7 @@ export default function Footer() {
             Ready to Find Your Perfect Career Path?
           </h2>
           <p className="text-white/80 mb-8 max-w-xl mx-auto">
-            Join 50,000+ students who found their direction with MargVedA. Start with a free consultation today.
+            Join 50,000+ students who found their direction with Career Brownie. Start with a free consultation today.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link
@@ -70,11 +71,9 @@ export default function Footer() {
           {/* Brand column */}
           <div className="lg:col-span-2">
             <Link href="/" className="flex items-center gap-2.5 mb-5">
-              <div className="w-10 h-10 rounded-xl bg-gradient-brand flex items-center justify-center">
-                <span className="text-white font-black text-lg">M</span>
-              </div>
+              <Image src="/logo.png" alt="Career Brownie" width={40} height={40} className="rounded-xl object-contain" />
               <span className="font-black text-2xl text-white">
-                Marg<span className="text-primary-400">VedA</span>
+                Career<span className="text-primary-400"> Brownie</span>
               </span>
             </Link>
             <p className="text-sm leading-relaxed mb-6 text-slate-400 max-w-xs">
@@ -106,7 +105,7 @@ export default function Footer() {
                 <div className="w-8 h-8 rounded-lg bg-slate-800 flex items-center justify-center flex-shrink-0 mt-0.5">
                   <MapPin size={14} className="text-primary-400" />
                 </div>
-                <span>MargVedA HQ, Koramangala, Bengaluru, Karnataka 560034</span>
+                <span>Career Brownie HQ, Koramangala, Bengaluru, Karnataka 560034</span>
               </div>
             </div>
 
@@ -154,7 +153,7 @@ export default function Footer() {
       {/* Bottom bar */}
       <div className="border-t border-slate-800">
         <div className="container-custom py-6 flex flex-col md:flex-row items-center justify-between gap-4 text-sm text-slate-500">
-          <p>© {new Date().getFullYear()} MargVedA. All rights reserved.</p>
+          <p>© {new Date().getFullYear()} Career Brownie. All rights reserved.</p>
           <div className="flex items-center gap-1">
             <span>Made with</span>
             <span className="text-red-400 mx-1">❤️</span>

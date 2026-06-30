@@ -1,3 +1,7 @@
+import json
+import os
+
+import requests as http_requests
 from rest_framework import serializers, status
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -220,3 +224,103 @@ class CareerListView(APIView):
              "avg_salary_india": v["avg_salary_india"], "demand": v["demand"], "growth_rate": v["growth_rate"]}
             for k, v in CAREERS.items() if not domain or v["domain"].lower() == domain.lower()
         ])
+
+
+class ChatView(APIView):
+    """
+    POST /api/v1/ai/chat/
+    Body: { "message": "...", "student_context": { "history": [...] } }
+
+    Forwards to the AI microservice. Falls back to direct Claude API call
+    if the microservice is unreachable.
+    """
+    permission_classes = [IsAuthenticated]
+
+    AI_SERVICE_URL = os.getenv("AI_SERVICE_URL", "http://localhost:9000")
+    ANTHROPIC_API_KEY = os.getenv("ANTHROPIC_API_KEY", "")
+
+    def post(self, request):
+        message = request.data.get("message", "").strip()
+        if not message:
+            return Response({"error": "message is required."}, status=status.HTTP_400_BAD_REQUEST)
+
+        student_context = request.data.get("student_context", {}) or {}
+
+        # Try forwarding to the AI microservice first
+        try:
+            ai_resp = http_requests.post(
+                f"{self.AI_SERVICE_URL}/chatbot/chat",
+                json={"message": message, "student_context": student_context},
+                timeout=15,
+            )
+            ai_resp.raise_for_status()
+            return Response(ai_resp.json())
+        except Exception:
+            pass
+
+        # Fallback: call Claude API directly from Django
+        return self._direct_claude(message, student_context)
+
+    def _direct_claude(self, message: str, student_context: dict):
+        api_key = self.ANTHROPIC_API_KEY
+        if not api_key:
+            return Response(self._rule_based(message))
+
+        SYSTEM = (
+            "You are Career Brownie AI, an expert career counsellor for Indian students. "
+            "Help with career planning, college admissions, skill gaps, resume, and study abroad. "
+            "Be concise (2-3 paragraphs). End with: ACTIONS: [\"action1\", \"action2\", \"action3\"]"
+        )
+
+        messages = []
+        for entry in (student_context.get("history") or [])[-10:]:
+            if entry.get("role") in ("user", "assistant") and entry.get("content"):
+                messages.append({"role": entry["role"], "content": entry["content"]})
+        messages.append({"role": "user", "content": message})
+
+        try:
+            resp = http_requests.post(
+                "https://api.anthropic.com/v1/messages",
+                headers={
+                    "x-api-key": api_key,
+                    "anthropic-version": "2023-06-01",
+                    "content-type": "application/json",
+                },
+                json={
+                    "model": "claude-sonnet-4-6",
+                    "max_tokens": 600,
+                    "system": SYSTEM,
+                    "messages": messages,
+                },
+                timeout=20,
+            )
+            resp.raise_for_status()
+            full_text = resp.json()["content"][0]["text"].strip()
+
+            reply, suggested_actions = full_text, []
+            if "ACTIONS:" in full_text:
+                parts = full_text.rsplit("ACTIONS:", 1)
+                reply = parts[0].strip()
+                try:
+                    suggested_actions = json.loads(parts[1].strip())
+                except Exception:
+                    pass
+
+            if not suggested_actions:
+                suggested_actions = ["Get career recommendations", "Take assessment", "Book consultation"]
+
+            return Response({"reply": reply, "suggested_actions": suggested_actions})
+
+        except Exception:
+            return Response(self._rule_based(message))
+
+    @staticmethod
+    def _rule_based(message: str) -> dict:
+        msg = message.lower()
+        if any(w in msg for w in ("college", "iit", "nit", "iim", "admission")):
+            return {"reply": "Share your stream, score, and preferred location — I'll suggest the best colleges for you.", "suggested_actions": ["Try college predictor", "Book counsellor session", "View requirements"]}
+        if any(w in msg for w in ("skill", "learn", "gap", "course")):
+            return {"reply": "Tell me your current skills and target career. I'll build a step-by-step learning plan.", "suggested_actions": ["Run skill gap analysis", "Generate roadmap", "Browse courses"]}
+        if any(w in msg for w in ("career", "job", "switch", "role")):
+            return {"reply": "Tell me your interests and strengths. I'll map the best career paths with salary and growth data for India.", "suggested_actions": ["Get career recommendations", "Generate roadmap", "Book consultation"]}
+        return {"reply": "I'm Career Brownie AI — I help with career planning, college admissions, skill gaps, and interview prep. What would you like to explore?", "suggested_actions": ["Get career recommendations", "Take assessment", "Book consultation"]}

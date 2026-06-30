@@ -11,7 +11,7 @@ def landing_page() -> rx.Component:
             rx.vstack(
                 page_header(
                     "AI-powered career counselling",
-                    "MargVedA guides students from confusion to a clear career path.",
+                    "Career Brownie guides students from confusion to a clear career path.",
                     "Students get recommendations, counsellors manage sessions, admins track the platform, and the AI service powers guidance workflows.",
                 ),
                 rx.hstack(

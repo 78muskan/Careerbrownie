@@ -11,9 +11,9 @@ import FAQSection from "@/components/sections/FAQSection";
 import NewsletterSection from "@/components/sections/NewsletterSection";
 
 export const metadata: Metadata = {
-  title: "MargVedA — India's AI-Powered Career Intelligence Platform",
+  title: "Career Brownie — India's AI-Powered Career Intelligence Platform",
   description:
-    "Discover your ideal career path with MargVedA. AI-powered career guidance, expert counselling, university admissions support, and study abroad assistance for Indian students.",
+    "Discover your ideal career path with Career Brownie. AI-powered career guidance, expert counselling, university admissions support, and study abroad assistance for Indian students.",
 };
 
 export default function HomePage() {

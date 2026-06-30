@@ -10,7 +10,7 @@ def login_page() -> rx.Component:
     return page_shell(
         rx.center(
             rx.vstack(
-                page_header("Secure access", "Login to MargVedA", "Use the account created through the backend JWT authentication system."),
+                page_header("Secure access", "Login to Career Brownie", "Use the account created through the backend JWT authentication system."),
                 rx.form(
                     rx.vstack(
                         text_input("email", "Email", "email"),

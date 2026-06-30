@@ -1,10 +1,10 @@
 """
-Shared pytest fixtures for MargVedA backend tests.
+Shared pytest fixtures for Career Brownie backend tests.
 Uses an in-memory SQLite database so tests are isolated and fast.
 """
 import os
 
-os.environ.setdefault("DATABASE_URL", "sqlite:///./margveda-test.db")
+os.environ.setdefault("DATABASE_URL", "sqlite:///./careerbrownie-test.db")
 os.environ.setdefault("SECRET_KEY", "test-secret-key-not-for-production")
 os.environ.setdefault("ENVIRONMENT", "test")
 
@@ -17,7 +17,7 @@ from app.core.database import Base
 from app.api.dependencies import get_db
 from app.main import create_app
 
-TEST_DB_URL = "sqlite:///./margveda-test.db"
+TEST_DB_URL = "sqlite:///./careerbrownie-test.db"
 
 engine_test = create_engine(TEST_DB_URL, connect_args={"check_same_thread": False})
 TestingSessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine_test)
@@ -60,7 +60,7 @@ def client():
 def registered_student(client):
     payload = {
         "full_name": "Test Student",
-        "email": "student@test.margveda.com",
+        "email": "student@test.careerbrownie.com",
         "password": "testpass123",
         "role": "student",
     }
@@ -74,7 +74,7 @@ def registered_student(client):
 def registered_counsellor(client):
     payload = {
         "full_name": "Test Counsellor",
-        "email": "counsellor@test.margveda.com",
+        "email": "counsellor@test.careerbrownie.com",
         "password": "testpass123",
         "role": "counsellor",
     }

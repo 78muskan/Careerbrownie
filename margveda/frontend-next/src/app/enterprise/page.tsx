@@ -26,7 +26,7 @@ export default function EnterprisePage() {
             National Career Intelligence for <span className="text-indigo-400">Institutions</span>
           </h1>
           <p className="text-gray-300 text-lg mb-8">
-            MargVedA Enterprise powers schools, universities, and corporates with AI-driven career intelligence at scale.
+            Career Brownie Enterprise powers schools, universities, and corporates with AI-driven career intelligence at scale.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <a href="/contact"
@@ -120,7 +120,7 @@ export default function EnterprisePage() {
       {/* CTA */}
       <section className="bg-gray-900 py-16 px-6 text-center text-white">
         <h2 className="text-3xl font-bold mb-4">Ready to transform career outcomes at scale?</h2>
-        <p className="text-gray-400 mb-8">Join 500+ institutions already using MargVedA Enterprise</p>
+        <p className="text-gray-400 mb-8">Join 500+ institutions already using Career Brownie Enterprise</p>
         <a href="/contact"
           className="inline-flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white px-8 py-3 rounded-xl font-medium transition">
           Schedule a Demo <ArrowRight className="w-4 h-4" />

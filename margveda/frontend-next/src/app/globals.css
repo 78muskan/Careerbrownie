@@ -254,6 +254,24 @@
   to { opacity: 1; transform: scale(1); }
 }
 
+/* Chat widget slide-in animation */
+@keyframes slide-in-from-bottom {
+  from { opacity: 0; transform: translateY(24px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.animate-in {
+  animation-fill-mode: both;
+}
+
+.slide-in-from-bottom-4 {
+  animation-name: slide-in-from-bottom;
+}
+
+.duration-200 {
+  animation-duration: 200ms;
+}
+
 .animate-slide-up {
   animation: slide-up 0.6s ease forwards;
 }
@@ -285,7 +303,7 @@
 .whatsapp-btn {
   position: fixed;
   bottom: 2rem;
-  right: 2rem;
+  left: 1.5rem;
   width: 3.5rem;
   height: 3.5rem;
   background: #25d366;

@@ -4,9 +4,9 @@ import { ArrowRight } from "lucide-react";
 import { SERVICES_LIST } from "@/lib/constants";
 
 export const metadata: Metadata = {
-  title: "Our Services — MargVedA",
+  title: "Our Services — Career Brownie",
   description:
-    "Explore MargVedA's comprehensive career guidance services — from career counselling and university admissions to study abroad and AI career guidance.",
+    "Explore Career Brownie's comprehensive career guidance services — from career counselling and university admissions to study abroad and AI career guidance.",
 };
 
 export default function ServicesPage() {

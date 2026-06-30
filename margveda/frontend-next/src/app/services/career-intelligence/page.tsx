@@ -3,7 +3,7 @@ import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 
 export const metadata: Metadata = {
-  title: "Career Intelligence — MargVedA",
+  title: "Career Intelligence — Career Brownie",
   description: "Real-time career intelligence: job market trends, salary benchmarks, skill demand forecasts, and industry insights for Indian professionals.",
 };
 

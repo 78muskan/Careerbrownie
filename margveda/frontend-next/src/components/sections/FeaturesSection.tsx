@@ -54,7 +54,7 @@ export default function FeaturesSection() {
           className="text-center mb-16"
         >
           <span className="inline-block bg-primary-50 text-primary-700 text-sm font-semibold px-4 py-1.5 rounded-full mb-4">
-            Why MargVedA?
+            Why Career Brownie?
           </span>
           <h2 className="section-heading text-slate-900 mb-4">
             Built for the{" "}

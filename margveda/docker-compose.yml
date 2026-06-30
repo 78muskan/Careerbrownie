@@ -1,48 +1,121 @@
 services:
+
+  # ── Infrastructure ──────────────────────────────────────────────────────────
+
   postgres:
     image: postgres:16-alpine
-    container_name: margveda_postgres
+    container_name: careerbrownie_postgres
     environment:
-      POSTGRES_DB: margveda
-      POSTGRES_USER: margveda
-      POSTGRES_PASSWORD: margveda_password
+      POSTGRES_DB: careerbrownie
+      POSTGRES_USER: careerbrownie
+      POSTGRES_PASSWORD: careerbrownie_password
     ports:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U margveda -d margveda"]
+      test: ["CMD-SHELL", "pg_isready -U careerbrownie -d careerbrownie"]
       interval: 10s
       timeout: 5s
       retries: 5
 
+  redis:
+    image: redis:7-alpine
+    container_name: careerbrownie_redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+
+  # ── AI Infrastructure ────────────────────────────────────────────────────────
+
+  qdrant:
+    image: qdrant/qdrant:v1.11.3
+    container_name: careerbrownie_qdrant
+    ports:
+      - "6333:6333"
+      - "6334:6334"
+    volumes:
+      - qdrant_data:/qdrant/storage
+    environment:
+      QDRANT__SERVICE__HTTP_PORT: 6333
+      QDRANT__SERVICE__GRPC_PORT: 6334
+    healthcheck:
+      test: ["CMD-SHELL", "bash -c '</dev/tcp/localhost/6333' 2>/dev/null && echo ok || exit 1"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+
+  ollama:
+    image: ollama/ollama:latest
+    container_name: careerbrownie_ollama
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama_data:/root/.ollama
+    dns:
+      - 8.8.8.8
+      - 8.8.4.4
+    # Pull Qwen2.5:7b on first start
+    entrypoint: ["/bin/sh", "-c", "ollama serve & sleep 8 && ollama pull qwen2.5:0.5b; wait"]
+    healthcheck:
+      test: ["CMD-SHELL", "bash -c '</dev/tcp/localhost/11434' 2>/dev/null && echo ok || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 10
+      start_period: 30s
+
+  # ── Application Services ────────────────────────────────────────────────────
+
   ai_service:
     build:
       context: ./ai_service
-    container_name: margveda_ai_service
+    container_name: careerbrownie_ai_service
+    environment:
+      ENVIRONMENT: development
+      LOG_LEVEL: INFO
+      OLLAMA_URL: http://ollama:11434
+      OLLAMA_MODEL: qwen2.5:0.5b
+      QDRANT_URL: http://qdrant:6333
+      REDIS_URL: redis://redis:6379/1
+      INTERNAL_API_KEY: ${INTERNAL_API_KEY:-dev-internal-key}
+      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}
+      EMBED_DEVICE: cpu
     ports:
       - "9000:9000"
+    depends_on:
+      redis:
+        condition: service_healthy
+      qdrant:
+        condition: service_healthy
+      ollama:
+        condition: service_healthy
     healthcheck:
-      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:9000/health')"]
-      interval: 15s
-      timeout: 5s
+      test: ["CMD-SHELL", "curl -sf http://localhost:9000/health || exit 1"]
+      interval: 30s
+      timeout: 15s
       retries: 5
 
   backend:
     build:
       context: ./backend
-    container_name: margveda_backend
+    container_name: careerbrownie_backend
     environment:
-      PROJECT_NAME: MargVedA API
+      PROJECT_NAME: Career Brownie API
       VERSION: 1.0.0
       ENVIRONMENT: docker
       API_V1_PREFIX: /api/v1
-      DATABASE_URL: postgresql+psycopg2://margveda:margveda_password@postgres:5432/margveda
+      DATABASE_URL: postgresql+psycopg2://careerbrownie:careerbrownie_password@postgres:5432/careerbrownie
       AI_SERVICE_URL: http://ai_service:9000
       SECRET_KEY: replace-this-with-a-long-random-secret
       JWT_ALGORITHM: HS256
       ACCESS_TOKEN_EXPIRE_MINUTES: 1440
-      BACKEND_CORS_ORIGINS: http://localhost:3000,http://127.0.0.1:3000,http://localhost:3001,http://127.0.0.1:3001
+      BACKEND_CORS_ORIGINS: http://localhost:3000,http://127.0.0.1:3000
     ports:
       - "8000:8000"
     depends_on:
@@ -53,15 +126,50 @@ services:
 
   frontend:
     build:
-      context: ./frontend
-    container_name: margveda_frontend
+      context: ./frontend-next
+      args:
+        NEXT_PUBLIC_API_URL: http://localhost:8000
+        NEXT_PUBLIC_AI_URL: http://localhost:9000
+        NEXT_PUBLIC_APP_URL: http://localhost:3000
+    container_name: careerbrownie_frontend
     environment:
-      BACKEND_API_URL: http://backend:8000/api/v1
+      NEXT_PUBLIC_API_URL: http://localhost:8000
+      NEXT_PUBLIC_AI_URL: http://localhost:9000
+      NEXT_PUBLIC_APP_URL: http://localhost:3000
     ports:
       - "3000:3000"
-      - "3001:3001"
     depends_on:
       - backend
 
+  # ── Automation ──────────────────────────────────────────────────────────────
+
+  n8n:
+    image: n8nio/n8n:latest
+    container_name: careerbrownie_n8n
+    ports:
+      - "5678:5678"
+    environment:
+      N8N_HOST: localhost
+      N8N_PORT: 5678
+      N8N_PROTOCOL: http
+      WEBHOOK_URL: http://localhost:5678
+      DB_TYPE: postgresdb
+      DB_POSTGRESDB_HOST: postgres
+      DB_POSTGRESDB_PORT: 5432
+      DB_POSTGRESDB_DATABASE: careerbrownie
+      DB_POSTGRESDB_USER: careerbrownie
+      DB_POSTGRESDB_PASSWORD: careerbrownie_password
+      DB_POSTGRESDB_SCHEMA: n8n
+      N8N_ENCRYPTION_KEY: ${N8N_ENCRYPTION_KEY:-change-me-in-production}
+    volumes:
+      - n8n_data:/home/node/.n8n
+    depends_on:
+      postgres:
+        condition: service_healthy
+
 volumes:
   postgres_data:
+  redis_data:
+  qdrant_data:
+  ollama_data:
+  n8n_data:

@@ -3,16 +3,16 @@ import FAQSection from "@/components/sections/FAQSection";
 import NewsletterSection from "@/components/sections/NewsletterSection";
 
 export const metadata: Metadata = {
-  title: "FAQ — MargVedA",
-  description: "Find answers to frequently asked questions about MargVedA's career guidance services, pricing, counselling sessions, and more.",
+  title: "FAQ — Career Brownie",
+  description: "Find answers to frequently asked questions about Career Brownie's career guidance services, pricing, counselling sessions, and more.",
 };
 
 const extendedFaqs = [
-  { q: "What subjects or streams does MargVedA cover?", a: "We cover all streams — Science (PCM/PCB), Commerce, Arts, Humanities, and vocational courses. Our counsellors are specialized across engineering, medicine, law, business, design, and emerging fields like AI and sustainability." },
+  { q: "What subjects or streams does Career Brownie cover?", a: "We cover all streams — Science (PCM/PCB), Commerce, Arts, Humanities, and vocational courses. Our counsellors are specialized across engineering, medicine, law, business, design, and emerging fields like AI and sustainability." },
   { q: "How long does a counselling session last?", a: "Standard sessions are 60 minutes. Free introductory sessions are 30 minutes. For comprehensive guidance packages, we offer extended 90-minute deep-dive sessions." },
   { q: "Can parents attend the counselling session?", a: "Absolutely! We encourage parents to join, especially for students in Class 9-12. We have separate parent consultation packages and also offer family sessions where both student and parent perspectives are addressed." },
   { q: "Do you offer group sessions or workshops?", a: "Yes! We conduct group workshops for schools and colleges on career planning, aptitude development, and industry insights. Contact us to schedule a workshop at your institution." },
-  { q: "How do you select and verify counsellors?", a: "All MargVedA counsellors go through a rigorous 5-step vetting process: credential verification, background checks, practical skill assessment, test counselling sessions, and peer review. Only 1 in 8 applicants makes it through." },
+  { q: "How do you select and verify counsellors?", a: "All Career Brownie counsellors go through a rigorous 5-step vetting process: credential verification, background checks, practical skill assessment, test counselling sessions, and peer review. Only 1 in 8 applicants makes it through." },
   { q: "Is there a mobile app available?", a: "Our Progressive Web App (PWA) works seamlessly on mobile browsers. A dedicated Android and iOS app is launching in Q3 2026." },
 ];
 
@@ -25,7 +25,7 @@ export default function FAQPage() {
           <h1 className="text-4xl md:text-5xl font-black text-white mb-4">
             Frequently Asked <span className="text-transparent bg-clip-text bg-gradient-to-r from-yellow-300 to-orange-300">Questions</span>
           </h1>
-          <p className="text-white/70 max-w-xl mx-auto">Everything you need to know about MargVedA.</p>
+          <p className="text-white/70 max-w-xl mx-auto">Everything you need to know about Career Brownie.</p>
         </div>
       </section>
 

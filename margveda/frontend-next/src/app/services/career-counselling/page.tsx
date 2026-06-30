@@ -3,7 +3,7 @@ import Link from "next/link";
 import { ArrowRight, CheckCircle2 } from "lucide-react";
 
 export const metadata: Metadata = {
-  title: "Career Counselling — MargVedA",
+  title: "Career Counselling — Career Brownie",
   description: "Expert 1-on-1 career counselling for students and professionals. Psychometric assessments, career roadmaps, and personalized guidance from certified counsellors.",
 };
 

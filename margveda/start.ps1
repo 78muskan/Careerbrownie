@@ -85,7 +85,7 @@ Start-Process powershell -ArgumentList "-NoExit", "-Command", @"
 
 Write-Host ""
 Write-Host "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━" -ForegroundColor Green
-Write-Host "  MargVedA is starting up in 3 new windows." -ForegroundColor Green
+Write-Host "  Career Brownie is starting up in 3 new windows." -ForegroundColor Green
 Write-Host ""
 Write-Host "  Frontend   → http://localhost:3000" -ForegroundColor White
 Write-Host "  Django API → http://localhost:8001/api/v1/" -ForegroundColor White

@@ -35,7 +35,7 @@ export default function ServicesSection() {
             <span className="text-gradient">Succeed in Your Career</span>
           </h2>
           <p className="text-slate-500 max-w-2xl mx-auto text-lg">
-            From career discovery to university admissions and beyond — MargVedA is your complete career partner for life.
+            From career discovery to university admissions and beyond — Career Brownie is your complete career partner for life.
           </p>
         </motion.div>
 

@@ -174,7 +174,7 @@ class TestReg05HealthAndDocs:
     def test_root_returns_welcome(self, client):
         r = client.get("/")
         assert r.status_code == 200
-        assert "MargVedA" in r.json()["message"]
+        assert "Career Brownie" in r.json()["message"]
 
     def test_openapi_schema_reachable(self, client):
         r = client.get("/openapi.json")

@@ -10,7 +10,7 @@ def register_page() -> rx.Component:
     return page_shell(
         rx.center(
             rx.vstack(
-                page_header("Create account", "Join MargVedA", "Choose your role so the platform opens the correct dashboard."),
+                page_header("Create account", "Join Career Brownie", "Choose your role so the platform opens the correct dashboard."),
                 rx.form(
                     rx.vstack(
                         text_input("full_name", "Full name"),

@@ -19,32 +19,32 @@ from states.student_state import StudentState
 
 app = rx.App(style=GLOBAL_STYLE)
 
-app.add_page(landing_page, route="/", title="MargVedA")
-app.add_page(login_page, route="/login", title="Login | MargVedA", on_load=AuthState.load_me)
-app.add_page(register_page, route="/register", title="Register | MargVedA")
+app.add_page(landing_page, route="/", title="Career Brownie")
+app.add_page(login_page, route="/login", title="Login | Career Brownie", on_load=AuthState.load_me)
+app.add_page(register_page, route="/register", title="Register | Career Brownie")
 app.add_page(
     student_dashboard_page,
     route="/student",
-    title="Student Dashboard | MargVedA",
+    title="Student Dashboard | Career Brownie",
     on_load=StudentState.load_dashboard,
 )
 app.add_page(
     counsellor_dashboard_page,
     route="/counsellor",
-    title="Counsellor Dashboard | MargVedA",
+    title="Counsellor Dashboard | Career Brownie",
     on_load=CounsellorState.load_dashboard,
 )
 app.add_page(
     admin_dashboard_page,
     route="/admin",
-    title="Admin Dashboard | MargVedA",
+    title="Admin Dashboard | Career Brownie",
     on_load=AdminState.load_dashboard,
 )
-app.add_page(chatbot_page, route="/chatbot", title="AI Chatbot | MargVedA")
+app.add_page(chatbot_page, route="/chatbot", title="AI Chatbot | Career Brownie")
 app.add_page(
     roadmap_page,
     route="/roadmap",
-    title="Career Roadmap | MargVedA",
+    title="Career Roadmap | Career Brownie",
     on_load=RecommendationState.load_roadmaps,
 )
-app.add_page(recommendations_page, route="/recommendations", title="Recommendations | MargVedA")
+app.add_page(recommendations_page, route="/recommendations", title="Recommendations | Career Brownie")

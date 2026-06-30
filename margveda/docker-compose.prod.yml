@@ -1,23 +1,23 @@
 services:
   postgres:
     image: postgres:16-alpine
-    container_name: margveda_postgres
+    container_name: careerbrownie_postgres
     restart: unless-stopped
     environment:
-      POSTGRES_DB: ${POSTGRES_DB:-margveda}
-      POSTGRES_USER: ${POSTGRES_USER:-margveda}
+      POSTGRES_DB: ${POSTGRES_DB:-careerbrownie}
+      POSTGRES_USER: ${POSTGRES_USER:-careerbrownie}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-margveda} -d ${POSTGRES_DB:-margveda}"]
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-careerbrownie} -d ${POSTGRES_DB:-careerbrownie}"]
       interval: 10s
       timeout: 5s
       retries: 5
 
   redis:
     image: redis:7-alpine
-    container_name: margveda_redis
+    container_name: careerbrownie_redis
     restart: unless-stopped
     volumes:
       - redis_data:/data
@@ -27,16 +27,62 @@ services:
       timeout: 3s
       retries: 3
 
+  qdrant:
+    image: qdrant/qdrant:v1.11.3
+    container_name: careerbrownie_qdrant
+    restart: unless-stopped
+    volumes:
+      - qdrant_data:/qdrant/storage
+    expose:
+      - "6333"
+    healthcheck:
+      test: ["CMD-SHELL", "curl -sf http://localhost:6333/healthz || exit 1"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+
+  ollama:
+    image: ollama/ollama:latest
+    container_name: careerbrownie_ollama
+    restart: unless-stopped
+    volumes:
+      - ollama_data:/root/.ollama
+    expose:
+      - "11434"
+    entrypoint: ["/bin/sh", "-c", "ollama serve & sleep 15 && ollama pull qwen2.5:7b && wait"]
+    healthcheck:
+      test: ["CMD-SHELL", "curl -sf http://localhost:11434/api/tags || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 10
+      start_period: 180s
+
   ai_service:
     build:
       context: ./ai_service
       dockerfile: Dockerfile
-    container_name: margveda_ai
+    container_name: careerbrownie_ai
     restart: unless-stopped
+    environment:
+      ENVIRONMENT: production
+      OLLAMA_URL: http://ollama:11434
+      OLLAMA_MODEL: qwen2.5:7b
+      QDRANT_URL: http://qdrant:6333
+      REDIS_URL: redis://redis:6379/1
+      INTERNAL_API_KEY: ${INTERNAL_API_KEY}
+      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}
+      EMBED_DEVICE: cpu
     expose:
       - "9000"
+    depends_on:
+      qdrant:
+        condition: service_healthy
+      ollama:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
     healthcheck:
-      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:9000/health')"]
+      test: ["CMD-SHELL", "curl -sf http://localhost:9000/health || exit 1"]
       interval: 15s
       timeout: 5s
       retries: 5
@@ -45,15 +91,15 @@ services:
     build:
       context: ./backend_django
       dockerfile: Dockerfile
-    container_name: margveda_django
+    container_name: careerbrownie_django
     restart: unless-stopped
     environment:
       SECRET_KEY: ${SECRET_KEY}
       DEBUG: "False"
       ALLOWED_HOSTS: ${DOMAIN},www.${DOMAIN},localhost
       DB_ENGINE: django.db.backends.postgresql
-      POSTGRES_DB: ${POSTGRES_DB:-margveda}
-      POSTGRES_USER: ${POSTGRES_USER:-margveda}
+      POSTGRES_DB: ${POSTGRES_DB:-careerbrownie}
+      POSTGRES_USER: ${POSTGRES_USER:-careerbrownie}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       POSTGRES_HOST: postgres
       POSTGRES_PORT: "5432"
@@ -63,9 +109,12 @@ services:
       EMAIL_PORT: ${EMAIL_PORT:-587}
       EMAIL_HOST_USER: ${EMAIL_HOST_USER:-}
       EMAIL_HOST_PASSWORD: ${EMAIL_HOST_PASSWORD:-}
-      DEFAULT_FROM_EMAIL: ${DEFAULT_FROM_EMAIL:-MargVedA <hello@margveda.com>}
+      DEFAULT_FROM_EMAIL: ${DEFAULT_FROM_EMAIL:-Career Brownie <hello@careerbrownie.com>}
       GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID:-}
       GOOGLE_CLIENT_SECRET: ${GOOGLE_CLIENT_SECRET:-}
+      AI_SERVICE_URL: http://ai_service:9000
+      INTERNAL_API_KEY: ${INTERNAL_API_KEY}
+      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}
     expose:
       - "8001"
     depends_on:
@@ -76,27 +125,27 @@ services:
     command: >
       sh -c "python manage.py migrate --noinput &&
              python manage.py collectstatic --noinput &&
-             gunicorn margveda_backend.wsgi:application --bind 0.0.0.0:8001 --workers 3"
+             gunicorn careerbrownie_backend.wsgi:application --bind 0.0.0.0:8001 --workers 3"
 
   celery:
     build:
       context: ./backend_django
       dockerfile: Dockerfile
-    container_name: margveda_celery
+    container_name: careerbrownie_celery
     restart: unless-stopped
     environment:
       SECRET_KEY: ${SECRET_KEY}
       REDIS_URL: redis://redis:6379/0
       POSTGRES_HOST: postgres
-      POSTGRES_DB: ${POSTGRES_DB:-margveda}
-      POSTGRES_USER: ${POSTGRES_USER:-margveda}
+      POSTGRES_DB: ${POSTGRES_DB:-careerbrownie}
+      POSTGRES_USER: ${POSTGRES_USER:-careerbrownie}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
     depends_on:
       redis:
         condition: service_healthy
       postgres:
         condition: service_healthy
-    command: celery -A margveda_backend worker -l info
+    command: celery -A careerbrownie_backend worker -l info
 
   frontend:
     build:
@@ -105,7 +154,7 @@ services:
       args:
         NEXT_PUBLIC_API_URL: https://${DOMAIN}/api/v1
         NEXT_PUBLIC_APP_URL: https://${DOMAIN}
-    container_name: margveda_frontend
+    container_name: careerbrownie_frontend
     restart: unless-stopped
     expose:
       - "3000"
@@ -114,7 +163,7 @@ services:
 
   nginx:
     image: nginx:1.27-alpine
-    container_name: margveda_nginx
+    container_name: careerbrownie_nginx
     restart: unless-stopped
     ports:
       - "80:80"
@@ -131,5 +180,7 @@ services:
 volumes:
   postgres_data:
   redis_data:
+  qdrant_data:
+  ollama_data:
   static_files:
   media_files:

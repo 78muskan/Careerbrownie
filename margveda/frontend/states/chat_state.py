@@ -9,7 +9,7 @@ class ChatState(rx.State):
     messages: list[dict[str, str]] = [
         {
             "role": "assistant",
-            "content": "Welcome to MargVedA. Ask about careers, colleges, skills, or roadmaps.",
+            "content": "Welcome to Career Brownie. Ask about careers, colleges, skills, or roadmaps.",
         }
     ]
     is_loading: bool = False

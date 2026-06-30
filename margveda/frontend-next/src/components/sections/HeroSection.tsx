@@ -84,7 +84,7 @@ export default function HeroSection() {
               transition={{ duration: 0.6, delay: 0.2 }}
               className="text-lg text-white/70 mb-8 max-w-lg leading-relaxed"
             >
-              MargVedA combines cutting-edge AI with expert human counselling to help students from Class 9 to professionals chart their perfect career path. Get personalized guidance, real-time insights, and university admissions support — all in one place.
+              Career Brownie combines cutting-edge AI with expert human counselling to help students from Class 9 to professionals chart their perfect career path. Get personalized guidance, real-time insights, and university admissions support — all in one place.
             </motion.p>
 
             {/* CTA buttons */}

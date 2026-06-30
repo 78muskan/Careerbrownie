@@ -1,7 +1,7 @@
 import os
 from celery import Celery
 
-os.environ.setdefault("DJANGO_SETTINGS_MODULE", "margveda_backend.settings")
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "careerbrownie_backend.settings")
 
 app = Celery("margveda")
 app.config_from_object("django.conf:settings", namespace="CELERY")

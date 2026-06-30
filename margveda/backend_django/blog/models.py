@@ -25,7 +25,7 @@ class BlogPost(models.Model):
     excerpt = models.TextField(max_length=500)
     content = models.TextField()
     category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True, related_name="posts")
-    author_name = models.CharField(max_length=200, default="MargVedA Team")
+    author_name = models.CharField(max_length=200, default="Career Brownie Team")
     author_title = models.CharField(max_length=200, blank=True)
     featured_emoji = models.CharField(max_length=10, default="📖")
     read_time = models.CharField(max_length=20, default="5 min")

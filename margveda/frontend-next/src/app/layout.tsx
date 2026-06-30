@@ -4,6 +4,7 @@ import "./globals.css";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import WhatsAppButton from "@/components/layout/WhatsAppButton";
+import FloatingChatButton from "@/components/chat/FloatingChatButton";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { SITE_NAME, SITE_DESCRIPTION } from "@/lib/constants";
 
@@ -35,12 +36,12 @@ export const metadata: Metadata = {
     "IIT NIT admissions guidance",
     "MBA admissions consultant India",
   ],
-  authors: [{ name: "MargVedA" }],
-  creator: "MargVedA",
+  authors: [{ name: "Career Brownie" }],
+  creator: "Career Brownie",
   openGraph: {
     type: "website",
     locale: "en_IN",
-    url: "https://margveda.com",
+    url: "https://careerbrownie.com",
     siteName: SITE_NAME,
     title: `${SITE_NAME} — India's AI-Powered Career Intelligence Platform`,
     description: SITE_DESCRIPTION,
@@ -49,14 +50,14 @@ export const metadata: Metadata = {
         url: "/og-image.png",
         width: 1200,
         height: 630,
-        alt: "MargVedA Career Intelligence Platform",
+        alt: "Career Brownie Career Intelligence Platform",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    site: "@margveda",
-    creator: "@margveda",
+    site: "@careerbrownie",
+    creator: "@careerbrownie",
     title: `${SITE_NAME} — India's AI-Powered Career Intelligence Platform`,
     description: SITE_DESCRIPTION,
     images: ["/og-image.png"],
@@ -79,7 +80,7 @@ export const metadata: Metadata = {
   },
   manifest: "/site.webmanifest",
   alternates: {
-    canonical: "https://margveda.com",
+    canonical: "https://careerbrownie.com",
   },
 };
 
@@ -96,6 +97,7 @@ export default function RootLayout({
           <main className="flex-1">{children}</main>
           <Footer />
           <WhatsAppButton />
+          <FloatingChatButton />
         </AuthProvider>
       </body>
     </html>

@@ -3,7 +3,7 @@ import Link from "next/link";
 import { ArrowLeft, Clock, Tag } from "lucide-react";
 
 export const metadata: Metadata = {
-  title: "Blog Article — MargVedA",
+  title: "Blog Article — Career Brownie",
 };
 
 export default function BlogPostPage({ params }: { params: { slug: string } }) {
@@ -37,14 +37,14 @@ export default function BlogPostPage({ params }: { params: { slug: string } }) {
             India&apos;s job market is transforming at an unprecedented pace. With AI, climate technology, advanced healthcare, and digital finance reshaping entire industries, the careers that were once considered stable are evolving — and entirely new opportunities are emerging.
           </p>
           <p className="text-slate-600 leading-relaxed mb-6">
-            This guide, compiled by MargVedA&apos;s research team and verified by industry experts, identifies the 20 highest-demand career paths for 2025 and beyond — along with the skills you need to land them.
+            This guide, compiled by Career Brownie&apos;s research team and verified by industry experts, identifies the 20 highest-demand career paths for 2025 and beyond — along with the skills you need to land them.
           </p>
           <h2 className="text-2xl font-black text-slate-900 mt-8 mb-4">1. AI & Machine Learning Engineer</h2>
           <p className="text-slate-600 leading-relaxed mb-6">
             India now has over 400,000 open AI/ML roles with an average salary of ₹18–45 LPA for experienced professionals. Skills: Python, TensorFlow/PyTorch, LLM fine-tuning, MLOps.
           </p>
           <div className="bg-primary-50 border border-primary-100 rounded-2xl p-6 my-8">
-            <p className="font-bold text-primary-900 mb-2">💡 MargVedA Insight</p>
+            <p className="font-bold text-primary-900 mb-2">💡 Career Brownie Insight</p>
             <p className="text-primary-700 text-sm">
               Ready to explore a career in AI? Take our free career assessment to see if your aptitude and interests align with tech careers.{" "}
               <a href="/book-consultation" className="underline font-semibold">Book a free session →</a>

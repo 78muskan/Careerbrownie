@@ -29,7 +29,7 @@ class Settings:
         backend_dir = Path(__file__).resolve().parents[2]
         _load_env_file(backend_dir / ".env")
 
-        self.PROJECT_NAME = os.getenv("PROJECT_NAME", "MargVedA API")
+        self.PROJECT_NAME = os.getenv("PROJECT_NAME", "Career Brownie API")
         self.VERSION = os.getenv("VERSION", "1.0.0")
         self.ENVIRONMENT = os.getenv("ENVIRONMENT", "development")
         self.API_V1_PREFIX = os.getenv("API_V1_PREFIX", "/api/v1")

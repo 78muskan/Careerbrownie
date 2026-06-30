@@ -1,5 +1,6 @@
 "use client";
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useAuth } from "@/contexts/AuthContext";
 import {
@@ -70,10 +71,8 @@ export default function DashboardSidebar() {
     <aside className="w-64 bg-white border-r border-gray-100 flex flex-col min-h-screen shrink-0">
       <div className="p-6 border-b border-gray-100">
         <Link href="/" className="flex items-center gap-3">
-          <div className="w-9 h-9 rounded-xl bg-gradient-brand flex items-center justify-center">
-            <span className="text-white font-bold text-lg">M</span>
-          </div>
-          <span className="font-display font-bold text-gray-900">MargVedA</span>
+          <Image src="/logo.png" alt="Career Brownie" width={36} height={36} className="rounded-xl object-contain" />
+          <span className="font-display font-bold text-gray-900">Career Brownie</span>
         </Link>
       </div>
 

@@ -67,7 +67,7 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
 
-ROOT_URLCONF = "margveda_backend.urls"
+ROOT_URLCONF = "careerbrownie_backend.urls"
 
 TEMPLATES = [
     {
@@ -85,7 +85,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = "margveda_backend.wsgi.application"
+WSGI_APPLICATION = "careerbrownie_backend.wsgi.application"
 
 _DATABASE_URL = os.getenv("DATABASE_URL", "")
 
@@ -202,7 +202,7 @@ USE_S3 = os.getenv("USE_S3", "False") == "True"
 if USE_S3:
     AWS_ACCESS_KEY_ID = os.getenv("AWS_ACCESS_KEY_ID", "")
     AWS_SECRET_ACCESS_KEY = os.getenv("AWS_SECRET_ACCESS_KEY", "")
-    AWS_STORAGE_BUCKET_NAME = os.getenv("AWS_STORAGE_BUCKET_NAME", "margveda-media")
+    AWS_STORAGE_BUCKET_NAME = os.getenv("AWS_STORAGE_BUCKET_NAME", "careerbrownie-media")
     AWS_S3_REGION_NAME = os.getenv("AWS_S3_REGION_NAME", "ap-south-1")
     AWS_S3_CUSTOM_DOMAIN = os.getenv("AWS_CLOUDFRONT_DOMAIN", "")
     AWS_DEFAULT_ACL = "public-read"
@@ -221,5 +221,9 @@ EMAIL_PORT = int(os.getenv("EMAIL_PORT", "587"))
 EMAIL_USE_TLS = True
 EMAIL_HOST_USER = os.getenv("EMAIL_HOST_USER", "")
 EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD", "")
-DEFAULT_FROM_EMAIL = os.getenv("DEFAULT_FROM_EMAIL", "MargVedA <hello@margveda.com>")
-ADMIN_EMAIL = os.getenv("ADMIN_EMAIL", "admin@margveda.com")
+DEFAULT_FROM_EMAIL = os.getenv("DEFAULT_FROM_EMAIL", "Career Brownie <hello@careerbrownie.com>")
+ADMIN_EMAIL = os.getenv("ADMIN_EMAIL", "admin@careerbrownie.com")
+
+# ---- AI Service ----
+AI_SERVICE_URL = os.getenv("AI_SERVICE_URL", "http://localhost:9000")
+ANTHROPIC_API_KEY = os.getenv("ANTHROPIC_API_KEY", "")

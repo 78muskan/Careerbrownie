@@ -2,9 +2,9 @@ import type { Metadata } from "next";
 import { Target, Eye, Heart, Users, TrendingUp, Globe2 } from "lucide-react";
 
 export const metadata: Metadata = {
-  title: "About Us — MargVedA",
+  title: "About Us — Career Brownie",
   description:
-    "Learn about MargVedA's mission to democratize quality career guidance for every Indian student using AI and expert human counselling.",
+    "Learn about Career Brownie's mission to democratize quality career guidance for every Indian student using AI and expert human counselling.",
 };
 
 const values = [
@@ -17,7 +17,7 @@ const values = [
 const team = [
   { name: "Aryan Kapoor", role: "Founder & CEO", bio: "IIT Bombay alum. Former McKinsey consultant. Obsessed with democratizing career intelligence.", emoji: "👨‍💼" },
   { name: "Dr. Meera Pillai", role: "Head of Counselling", bio: "PhD in Educational Psychology. 18 years guiding students across India. Certified career coach.", emoji: "👩‍🏫" },
-  { name: "Rohan Gupta", role: "CTO & AI Lead", bio: "IIT Delhi + Stanford MS. Built AI systems at Google. Leading MargVedA's career intelligence engine.", emoji: "👨‍💻" },
+  { name: "Rohan Gupta", role: "CTO & AI Lead", bio: "IIT Delhi + Stanford MS. Built AI systems at Google. Leading Career Brownie's career intelligence engine.", emoji: "👨‍💻" },
   { name: "Priya Sharma", role: "Head of University Relations", bio: "Former admissions officer at top institutions. Deep relationships with 500+ universities globally.", emoji: "👩‍🎓" },
 ];
 
@@ -39,7 +39,7 @@ export default function AboutPage() {
             in India
           </h1>
           <p className="text-white/70 max-w-2xl mx-auto text-lg leading-relaxed">
-            MargVedA was born from a simple observation: millions of talented Indian students make career decisions without proper guidance, often based on peer pressure or parental expectations. We&apos;re changing that.
+            Career Brownie was born from a simple observation: millions of talented Indian students make career decisions without proper guidance, often based on peer pressure or parental expectations. We&apos;re changing that.
           </p>
         </div>
       </section>
@@ -82,7 +82,7 @@ export default function AboutPage() {
                   The result? <strong>40% of engineering graduates</strong> end up in roles unrelated to their degree. <strong>67% of professionals</strong> regret their career choices by age 30. Countless talented individuals are stuck in wrong careers because no one showed them a better path.
                 </p>
                 <p>
-                  We founded MargVedA in 2022 to fix this. By combining cutting-edge AI with expert human counselling, we&apos;ve created a platform that makes world-class career guidance affordable and accessible to every Indian.
+                  We founded Career Brownie in 2022 to fix this. By combining cutting-edge AI with expert human counselling, we&apos;ve created a platform that makes world-class career guidance affordable and accessible to every Indian.
                 </p>
               </div>
             </div>
@@ -91,7 +91,7 @@ export default function AboutPage() {
                 { stat: "93%", desc: "Students lack proper career guidance", color: "bg-red-50 border-red-100" },
                 { stat: "40%", desc: "Engineering grads in wrong jobs", color: "bg-orange-50 border-orange-100" },
                 { stat: "₹2L+", desc: "Avg. salary increase after guidance", color: "bg-emerald-50 border-emerald-100" },
-                { stat: "95%", desc: "Students satisfied with MargVedA", color: "bg-primary-50 border-primary-100" },
+                { stat: "95%", desc: "Students satisfied with Career Brownie", color: "bg-primary-50 border-primary-100" },
               ].map((item) => (
                 <div key={item.stat} className={`${item.color} border rounded-2xl p-6 text-center`}>
                   <p className="text-3xl font-black text-slate-900 mb-2">{item.stat}</p>

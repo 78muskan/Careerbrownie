@@ -73,7 +73,7 @@ class RecommendationService:
             return CollegePredictionResponse(
                 colleges=[
                     CollegeOption(
-                        name="MargVedA Institute Match",
+                        name="Career Brownie Institute Match",
                         location=payload.preferred_location or "India",
                         courses=[payload.academic_stream, "Career Foundation Program"],
                         fit_score=0.78,

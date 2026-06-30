@@ -20,7 +20,7 @@ class ContactLeadView(APIView):
         if serializer.is_valid():
             lead = serializer.save()
             _notify_admin(
-                f"[MargVedA] New Contact: {lead.name or lead.email}",
+                f"[Career Brownie] New Contact: {lead.name or lead.email}",
                 f"Name: {lead.name}\nEmail: {lead.email}\nPhone: {lead.phone}\n"
                 f"Subject: {lead.subject}\nMessage: {lead.message}\nSource: {lead.source}",
             )
@@ -37,7 +37,7 @@ class ConsultationBookingView(APIView):
         if serializer.is_valid():
             booking = serializer.save()
             _notify_admin(
-                f"[MargVedA] New Consultation: {booking.name}",
+                f"[Career Brownie] New Consultation: {booking.name}",
                 f"Name: {booking.name}\nEmail: {booking.email}\nPhone: {booking.phone}\n"
                 f"Grade: {booking.grade}\nService: {booking.service}\n"
                 f"Date: {booking.preferred_date} at {booking.preferred_time}",

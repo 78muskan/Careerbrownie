@@ -8,10 +8,8 @@ export default function AuthLayout({ children }: { children: ReactNode }) {
         <div className="absolute inset-0 pattern-dots opacity-10" />
         <div className="relative z-10">
           <div className="flex items-center gap-3 mb-16">
-            <div className="w-10 h-10 rounded-xl bg-white/20 backdrop-blur flex items-center justify-center">
-              <span className="text-white font-bold text-xl">M</span>
-            </div>
-            <span className="text-white font-display font-bold text-xl">MargVedA</span>
+            <img src="/logo.png" alt="Career Brownie" width={40} height={40} className="rounded-xl object-contain" />
+            <span className="text-white font-display font-bold text-xl">Career Brownie</span>
           </div>
           <h2 className="text-4xl font-display font-bold text-white leading-tight mb-6">
             Your career journey starts with the right guidance.

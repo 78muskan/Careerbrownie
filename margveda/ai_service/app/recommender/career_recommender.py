@@ -1,5 +1,5 @@
 from app.models.schemas import (
-    CareerRecommendationItem,
+    CareerOption,
     CareerRecommendationRequest,
     CareerRecommendationResponse,
 )
@@ -7,70 +7,98 @@ from app.models.schemas import (
 
 CAREERS = [
     {
-        "career": "AI and Machine Learning Engineer",
-        "keywords": ["ai", "machine", "learning", "math", "coding", "python", "robotics"],
-        "skills": ["Python", "Statistics", "Linear Algebra", "Machine Learning", "APIs"],
-        "next_steps": ["Practice Python", "Build ML notebooks", "Deploy a small API"],
+        "title": "AI and Machine Learning Engineer",
+        "keywords": ["ai", "machine", "learning", "math", "coding", "python", "robotics", "data"],
+        "skills_to_build": ["Python", "Statistics", "Linear Algebra", "Machine Learning", "APIs"],
     },
     {
-        "career": "Data Analyst",
-        "keywords": ["data", "charts", "statistics", "excel", "business", "sql"],
-        "skills": ["Excel", "SQL", "Python", "Statistics", "Storytelling"],
-        "next_steps": ["Learn SQL", "Analyze public data", "Create dashboards"],
+        "title": "Data Analyst",
+        "keywords": ["data", "charts", "statistics", "excel", "business", "sql", "analytics"],
+        "skills_to_build": ["Excel", "SQL", "Python", "Statistics", "Data Visualisation"],
     },
     {
-        "career": "Product Designer",
-        "keywords": ["design", "creative", "apps", "drawing", "psychology", "ux"],
-        "skills": ["UX Research", "Wireframing", "Visual Design", "Prototyping"],
-        "next_steps": ["Study design patterns", "Create case studies", "Run user interviews"],
+        "title": "Product Designer (UX/UI)",
+        "keywords": ["design", "creative", "apps", "drawing", "psychology", "ux", "ui", "visual"],
+        "skills_to_build": ["UX Research", "Wireframing", "Figma", "Visual Design", "Prototyping"],
     },
     {
-        "career": "Chartered Accountant",
-        "keywords": ["commerce", "accounts", "tax", "finance", "business"],
-        "skills": ["Accounting", "Taxation", "Auditing", "Business Law"],
-        "next_steps": ["Plan CA foundation", "Practice accounts", "Track finance news"],
+        "title": "Chartered Accountant",
+        "keywords": ["commerce", "accounts", "tax", "finance", "business", "audit", "ca"],
+        "skills_to_build": ["Accounting", "Taxation", "Auditing", "Business Law", "Tally"],
+    },
+    {
+        "title": "Software Engineer",
+        "keywords": ["coding", "programming", "software", "computer", "tech", "web", "app", "backend"],
+        "skills_to_build": ["Data Structures", "Algorithms", "System Design", "Git", "Cloud"],
+    },
+    {
+        "title": "Doctor (MBBS / MD)",
+        "keywords": ["biology", "medicine", "doctor", "neet", "hospital", "health", "anatomy"],
+        "skills_to_build": ["Biology", "Chemistry", "Clinical Skills", "Patient Communication"],
+    },
+    {
+        "title": "Civil Services (IAS/IPS)",
+        "keywords": ["upsc", "ias", "ips", "civils", "government", "administration", "public"],
+        "skills_to_build": ["Current Affairs", "History", "Polity", "Essay Writing", "Interview Skills"],
+    },
+    {
+        "title": "Management Consultant",
+        "keywords": ["mba", "management", "consulting", "strategy", "business", "cat", "iim"],
+        "skills_to_build": ["Problem Solving", "Business Analysis", "Communication", "Excel", "PPT"],
     },
 ]
 
 
 class CareerRecommender:
     def recommend(self, payload: CareerRecommendationRequest) -> CareerRecommendationResponse:
-        terms = self._tokens(
-            payload.interests + payload.strengths + payload.subjects + [payload.stream or ""]
+        input_tokens = self._tokens(
+            payload.interests
+            + payload.skills
+            + ([payload.academic_stream] if payload.academic_stream else [])
+            + ([payload.preferred_location] if payload.preferred_location else [])
         )
-        items: list[CareerRecommendationItem] = []
+        items: list[CareerOption] = []
         for career in CAREERS:
-            matches = terms.intersection(self._tokens(career["keywords"] + career["skills"]))
-            score = min(99, 48 + len(matches) * 13)
-            why = "Matched against interests, strengths, and subject signals"
+            matches = input_tokens.intersection(
+                self._tokens(career["keywords"] + career["skills_to_build"])
+            )
+            score = round(min(99.0, 48.0 + len(matches) * 12.0), 1)
+            reason = (
+                f"Matched {len(matches)} signals from your interests and skills"
+                if matches
+                else "Broad career option worth exploring"
+            )
             items.append(
-                CareerRecommendationItem(
-                    career=career["career"],
+                CareerOption(
+                    title=career["title"],
                     match_score=score,
-                    why=why,
-                    core_skills=career["skills"],
-                    next_steps=career["next_steps"],
+                    reason=reason,
+                    skills_to_build=career["skills_to_build"],
                 )
             )
-        items.sort(key=lambda item: item.match_score, reverse=True)
+        items.sort(key=lambda c: c.match_score, reverse=True)
         return CareerRecommendationResponse(recommendations=items)
 
     def skills_for(self, target_career: str) -> list[str]:
-        target_terms = self._tokens([target_career])
+        target_tokens = self._tokens([target_career])
         best = CAREERS[0]
         best_score = 0
         for career in CAREERS:
-            score = len(target_terms.intersection(self._tokens([career["career"]] + career["keywords"])))
+            score = len(
+                target_tokens.intersection(
+                    self._tokens([career["title"]] + career["keywords"])
+                )
+            )
             if score > best_score:
                 best = career
                 best_score = score
-        return best["skills"]
+        return best["skills_to_build"]
 
     def _tokens(self, values: list[str]) -> set[str]:
         tokens: set[str] = set()
         for value in values:
             for part in str(value).replace("-", " ").replace("/", " ").split():
-                clean = "".join(char for char in part.lower() if char.isalnum())
+                clean = "".join(c for c in part.lower() if c.isalnum())
                 if clean:
                     tokens.add(clean)
         return tokens

@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { Menu, X, ChevronDown, Phone, Sparkles } from "lucide-react";
@@ -67,16 +68,14 @@ export default function Header() {
         <nav className="container-custom flex items-center justify-between h-16">
           {/* Logo */}
           <Link href="/" className="flex items-center gap-2.5 flex-shrink-0">
-            <div className="w-9 h-9 rounded-xl bg-gradient-brand flex items-center justify-center shadow-md">
-              <span className="text-white font-black text-base">M</span>
-            </div>
+            <Image src="/logo.png" alt="Career Brownie" width={36} height={36} className="rounded-xl object-contain" />
             <span
               className={cn(
                 "font-black text-xl tracking-tight transition-colors",
                 scrolled ? "text-slate-900" : "text-white"
               )}
             >
-              Marg<span className="text-gradient">VedA</span>
+              Career<span className="text-gradient"> Brownie</span>
             </span>
           </Link>
 
@@ -195,11 +194,9 @@ export default function Header() {
             >
               <div className="flex items-center justify-between p-5 border-b border-slate-100">
                 <Link href="/" className="flex items-center gap-2">
-                  <div className="w-8 h-8 rounded-lg bg-gradient-brand flex items-center justify-center">
-                    <span className="text-white font-black text-sm">M</span>
-                  </div>
+                  <Image src="/logo.png" alt="Career Brownie" width={32} height={32} className="rounded-lg object-contain" />
                   <span className="font-black text-lg text-slate-900">
-                    Marg<span className="text-gradient">VedA</span>
+                    Career<span className="text-gradient"> Brownie</span>
                   </span>
                 </Link>
                 <button

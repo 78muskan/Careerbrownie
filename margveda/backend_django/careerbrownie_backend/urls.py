@@ -6,15 +6,15 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 
-admin.site.site_header = "MargVedA Admin"
-admin.site.site_title = "MargVedA"
+admin.site.site_header = "Career Brownie Admin"
+admin.site.site_title = "Career Brownie"
 admin.site.index_title = "Career Intelligence Platform — Admin"
 
 
 @api_view(["GET"])
 @permission_classes([AllowAny])
 def health_check(request):
-    return Response({"status": "ok", "service": "MargVedA Backend"})
+    return Response({"status": "ok", "service": "Career Brownie Backend"})
 
 
 @api_view(["GET"])
@@ -22,7 +22,7 @@ def health_check(request):
 def api_root(request):
     base = request.build_absolute_uri("/api/v1/")
     return Response({
-        "service": "MargVedA API v1",
+        "service": "Career Brownie API v1",
         "status": "ok",
         "endpoints": {
             "health":           f"{base}health/",

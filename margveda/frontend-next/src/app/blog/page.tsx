@@ -3,7 +3,7 @@ import Link from "next/link";
 import { ArrowRight, Clock, Tag } from "lucide-react";
 
 export const metadata: Metadata = {
-  title: "Career Guidance Blog — MargVedA",
+  title: "Career Guidance Blog — Career Brownie",
   description:
     "Expert articles, career tips, exam strategies, and industry insights to help Indian students and professionals navigate their career journeys.",
 };

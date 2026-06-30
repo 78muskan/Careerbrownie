@@ -32,7 +32,7 @@ class Migration(migrations.Migration):
                 ('slug', models.SlugField(blank=True, max_length=320, unique=True)),
                 ('excerpt', models.TextField(max_length=500)),
                 ('content', models.TextField()),
-                ('author_name', models.CharField(default='MargVedA Team', max_length=200)),
+                ('author_name', models.CharField(default='Career Brownie Team', max_length=200)),
                 ('author_title', models.CharField(blank=True, max_length=200)),
                 ('featured_emoji', models.CharField(default='📖', max_length=10)),
                 ('read_time', models.CharField(default='5 min', max_length=20)),

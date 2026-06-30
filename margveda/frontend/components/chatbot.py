@@ -19,7 +19,7 @@ def chatbot_panel() -> rx.Component:
         rx.cond(
             ChatbotState.reply != "",
             rx.vstack(
-                rx.text("MargVedA AI", color="#27e0ff", font_weight="900"),
+                rx.text("Career Brownie AI", color="#27e0ff", font_weight="900"),
                 rx.text(ChatbotState.reply, color="#e5f4ff", line_height="1.7"),
                 rx.foreach(
                     ChatbotState.suggested_actions,

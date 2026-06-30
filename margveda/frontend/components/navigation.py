@@ -24,7 +24,7 @@ def navbar() -> rx.Component:
                     background=f"linear-gradient(135deg, {ACCENT}, #8b5cf6)",
                 ),
                 rx.vstack(
-                    rx.text("MargVedA", color=TEXT, font_weight="900", line_height="1"),
+                    rx.text("Career Brownie", color=TEXT, font_weight="900", line_height="1"),
                     rx.text("AI Career Guidance", color=MUTED, font_size="12px"),
                     spacing="0",
                     align_items="start",

@@ -3,7 +3,7 @@ import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 
 export const metadata: Metadata = {
-  title: "Study Abroad Consulting — MargVedA",
+  title: "Study Abroad Consulting — Career Brownie",
   description: "Complete study abroad support for Indian students — country selection, university applications, visa guidance, scholarships, and pre-departure preparation.",
 };
 

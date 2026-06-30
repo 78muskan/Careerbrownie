@@ -1,19 +1,19 @@
-export const SITE_NAME = "MargVedA";
+export const SITE_NAME = "Career Brownie";
 export const SITE_TAGLINE = "India's AI-Powered Career Intelligence Platform";
 export const SITE_DESCRIPTION =
-  "MargVedA helps students, graduates, and professionals discover their ideal career path with AI-powered guidance, expert counselling, and university admissions support.";
+  "Career Brownie helps students, graduates, and professionals discover their ideal career path with AI-powered guidance, expert counselling, and university admissions support.";
 
-export const CONTACT_EMAIL = "hello@margveda.com";
+export const CONTACT_EMAIL = "hello@careerbrownie.com";
 export const CONTACT_PHONE = "+91 98765 43210";
 export const WHATSAPP_NUMBER = "919876543210";
-export const WHATSAPP_MESSAGE = "Hi! I'd like to know more about MargVedA career guidance services.";
+export const WHATSAPP_MESSAGE = "Hi! I'd like to know more about Career Brownie career guidance services.";
 
 export const SOCIAL_LINKS = {
-  instagram: "https://instagram.com/margveda",
-  linkedin: "https://linkedin.com/company/margveda",
-  twitter: "https://twitter.com/margveda",
-  youtube: "https://youtube.com/@margveda",
-  facebook: "https://facebook.com/margveda",
+  instagram: "https://instagram.com/careerbrownie",
+  linkedin: "https://linkedin.com/company/careerbrownie",
+  twitter: "https://twitter.com/careerbrownie",
+  youtube: "https://youtube.com/@careerbrownie",
+  facebook: "https://facebook.com/careerbrownie",
 };
 
 export const API_BASE_URL =
@@ -51,7 +51,7 @@ export const TESTIMONIALS = [
     role: "Engineering Student, IIT Delhi",
     avatar: "/testimonials/priya.jpg",
     content:
-      "MargVedA's AI guidance helped me discover my passion for data science. The personalized roadmap was exactly what I needed to crack my dream internship at a top tech company.",
+      "Career Brownie's AI guidance helped me discover my passion for data science. The personalized roadmap was exactly what I needed to crack my dream internship at a top tech company.",
     rating: 5,
     course: "B.Tech Computer Science",
   },
@@ -71,7 +71,7 @@ export const TESTIMONIALS = [
     role: "Class 12 Student, Mumbai",
     avatar: "/testimonials/sneha.jpg",
     content:
-      "I was completely lost about what to study after 12th. MargVedA's career assessment identified my strengths and opened up career paths I had never even considered!",
+      "I was completely lost about what to study after 12th. Career Brownie's career assessment identified my strengths and opened up career paths I had never even considered!",
     rating: 5,
     course: "Pre-University",
   },
@@ -209,8 +209,8 @@ export const HOW_IT_WORKS = [
 
 export const FAQS = [
   {
-    q: "Who is MargVedA for?",
-    a: "MargVedA serves students from Class 9-12, college students, graduates, working professionals, and parents seeking guidance for their children.",
+    q: "Who is Career Brownie for?",
+    a: "Career Brownie serves students from Class 9-12, college students, graduates, working professionals, and parents seeking guidance for their children.",
   },
   {
     q: "How is AI career guidance different from human counselling?",
