@@ -18,7 +18,7 @@ EXPOSE 8080
 
 CMD python manage.py migrate --noinput && \
     python manage.py collectstatic --noinput && \
-    gunicorn margveda_backend.wsgi:application \
+    gunicorn careerbrownie_backend.wsgi:application \
       --bind 0.0.0.0:${PORT:-8080} \
       --workers 3 \
       --timeout 120
