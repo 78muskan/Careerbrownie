@@ -6,10 +6,12 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libpq-dev gcc \
     && rm -rf /var/lib/apt/lists/*
 
-COPY requirements.txt .
+# Copy only requirements first (from repo root context)
+COPY margveda/backend_django/requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt gunicorn
 
-COPY . .
+# Copy the Django app
+COPY margveda/backend_django/ .
 
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1

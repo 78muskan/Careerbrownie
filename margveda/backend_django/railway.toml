@@ -1,6 +1,6 @@
 [build]
 builder = "DOCKERFILE"
-dockerfilePath = "Dockerfile"
+dockerfilePath = "margveda/backend_django/Dockerfile"
 
 [deploy]
 startCommand = "python manage.py migrate --noinput && python manage.py collectstatic --noinput && gunicorn careerbrownie_backend.wsgi:application --bind 0.0.0.0:$PORT --workers 3 --timeout 120"
