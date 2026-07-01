@@ -2,15 +2,21 @@ FROM python:3.12-slim
 
 WORKDIR /app
 
-# psycopg2-binary includes its own libpq — no system packages needed
+# Pip tuning — avoid timeouts and source builds on Railway's network
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1 \
+    PIP_NO_CACHE_DIR=1 \
+    PIP_DISABLE_PIP_VERSION_CHECK=1 \
+    PIP_DEFAULT_TIMEOUT=120 \
+    PIP_RETRIES=5 \
+    PORT=8080
+
+# Install deps first (cached layer — only re-runs if requirements.txt changes)
 COPY margveda/backend_django/requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
+RUN pip install --prefer-binary --no-cache-dir -r requirements.txt
 
+# Copy app source
 COPY margveda/backend_django/ .
-
-ENV PYTHONDONTWRITEBYTECODE=1
-ENV PYTHONUNBUFFERED=1
-ENV PORT=8080
 
 EXPOSE 8080
 
