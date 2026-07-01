@@ -24,8 +24,8 @@ interface ChatWidgetProps {
 
 // ── Constants ─────────────────────────────────────────────────────────────────
 
-const AI_SERVICE_URL =
-  process.env.NEXT_PUBLIC_AI_URL || "http://localhost:9000";
+const BACKEND_URL =
+  process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000/api/v1";
 
 const QUICK_PROMPTS = [
   "I'm in Class 12 PCM. Which career should I choose?",
@@ -171,12 +171,14 @@ export default function ChatWidget({ open, onClose, title = "Career Brownie AI" 
       setLoading(true);
 
       try {
-        const res = await fetch(`${AI_SERVICE_URL}/api/v2/chat/`, {
+        const res = await fetch(`${BACKEND_URL}/ai/public-chat/`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
             message: trimmed,
-            session_id: sessionId.current,
+            history: messages
+              .filter((m) => m.id !== "welcome")
+              .map((m) => ({ role: m.role, content: m.content })),
           }),
         });
 

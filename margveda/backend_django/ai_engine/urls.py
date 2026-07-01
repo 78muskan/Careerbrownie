@@ -1,10 +1,12 @@
 from django.urls import path
 from .views import (
     AssessmentQuestionsView, SubmitAssessmentView, AssessmentResultView,
-    RoadmapView, AIAdvisorView, CareerDetailView, CareerListView, ChatView,
+    RoadmapView, AIAdvisorView, CareerDetailView, CareerListView,
+    ChatView, PublicChatView,
 )
 
 urlpatterns = [
+    path("public-chat/", PublicChatView.as_view(), name="ai-public-chat"),
     path("chat/", ChatView.as_view(), name="ai-chat"),
     path("assessment/<str:assessment_type>/questions/", AssessmentQuestionsView.as_view(), name="assessment-questions"),
     path("assessment/<str:assessment_type>/submit/", SubmitAssessmentView.as_view(), name="assessment-submit"),

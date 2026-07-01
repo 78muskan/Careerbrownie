@@ -226,6 +226,25 @@ class CareerListView(APIView):
         ])
 
 
+class PublicChatView(APIView):
+    """
+    POST /api/v1/ai/public-chat/
+    No authentication required — used by the public chat widget.
+    Calls Claude API directly; falls back to rule-based responses.
+    """
+    permission_classes = []
+    authentication_classes = []
+
+    ANTHROPIC_API_KEY = os.getenv("ANTHROPIC_API_KEY", "")
+
+    def post(self, request):
+        message = request.data.get("message", "").strip()
+        if not message:
+            return Response({"error": "message is required."}, status=status.HTTP_400_BAD_REQUEST)
+        history = request.data.get("history", [])
+        return ChatView._direct_claude_static(message, history, self.ANTHROPIC_API_KEY)
+
+
 class ChatView(APIView):
     """
     POST /api/v1/ai/chat/
@@ -260,6 +279,43 @@ class ChatView(APIView):
 
         # Fallback: call Claude API directly from Django
         return self._direct_claude(message, student_context)
+
+    @staticmethod
+    def _direct_claude_static(message: str, history: list, api_key: str):
+        if not api_key:
+            return Response(ChatView._rule_based(message))
+        SYSTEM = (
+            "You are Career Brownie AI, an expert career counsellor for Indian students. "
+            "Help with career planning, college admissions, skill gaps, resume, and study abroad. "
+            "Be concise (2-3 paragraphs). End with: ACTIONS: [\"action1\", \"action2\", \"action3\"]"
+        )
+        messages = []
+        for entry in (history or [])[-10:]:
+            if entry.get("role") in ("user", "assistant") and entry.get("content"):
+                messages.append({"role": entry["role"], "content": entry["content"]})
+        messages.append({"role": "user", "content": message})
+        try:
+            resp = http_requests.post(
+                "https://api.anthropic.com/v1/messages",
+                headers={"x-api-key": api_key, "anthropic-version": "2023-06-01", "content-type": "application/json"},
+                json={"model": "claude-haiku-4-5-20251001", "max_tokens": 500, "system": SYSTEM, "messages": messages},
+                timeout=20,
+            )
+            resp.raise_for_status()
+            full_text = resp.json()["content"][0]["text"].strip()
+            reply, suggested_actions = full_text, []
+            if "ACTIONS:" in full_text:
+                parts = full_text.rsplit("ACTIONS:", 1)
+                reply = parts[0].strip()
+                try:
+                    suggested_actions = json.loads(parts[1].strip())
+                except Exception:
+                    pass
+            if not suggested_actions:
+                suggested_actions = ["Get career recommendations", "Take assessment", "Book consultation"]
+            return Response({"reply": reply, "suggested_actions": suggested_actions})
+        except Exception:
+            return Response(ChatView._rule_based(message))
 
     def _direct_claude(self, message: str, student_context: dict):
         api_key = self.ANTHROPIC_API_KEY

@@ -3,9 +3,10 @@ export const SITE_TAGLINE = "India's AI-Powered Career Intelligence Platform";
 export const SITE_DESCRIPTION =
   "Career Brownie helps students, graduates, and professionals discover their ideal career path with AI-powered guidance, expert counselling, and university admissions support.";
 
-export const CONTACT_EMAIL = "hello@careerbrownie.com";
-export const CONTACT_PHONE = "+91 98765 43210";
-export const WHATSAPP_NUMBER = "919876543210";
+export const FOUNDER_NAME = "Muskan Sahani";
+export const CONTACT_EMAIL = "careerbrownie@gmail.com";
+export const CONTACT_PHONE = "+91 8171557334";
+export const WHATSAPP_NUMBER = "918171557334";
 export const WHATSAPP_MESSAGE = "Hi! I'd like to know more about Career Brownie career guidance services.";
 
 export const SOCIAL_LINKS = {
