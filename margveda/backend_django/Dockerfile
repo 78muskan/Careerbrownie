@@ -2,10 +2,7 @@ FROM python:3.12-slim
 
 WORKDIR /app
 
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    libpq-dev gcc && \
-    rm -rf /var/lib/apt/lists/*
-
+# psycopg2-binary includes its own libpq — no system packages needed
 COPY margveda/backend_django/requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
