@@ -70,8 +70,9 @@ export default function HowItWorksSection() {
           <div className="absolute inset-0 pattern-dots opacity-20" />
           <div className="relative z-10 grid md:grid-cols-2 gap-10 items-center">
             <div>
-              <h3 className="text-3xl font-black mb-4">
-                Free Career Assessment — Worth ₹2,999
+              <h3 className="text-3xl font-black mb-4 text-white">
+                Free Career Assessment — Worth{" "}
+                <span className="text-yellow-300">₹2,999</span>
               </h3>
               <p className="text-white/70 mb-6 leading-relaxed">
                 Take our comprehensive 20-minute career assessment and get a detailed report on your strengths, ideal career paths, skill gaps, and personalized action plan — completely free.

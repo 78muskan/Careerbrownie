@@ -68,7 +68,7 @@ export default function Header() {
         <nav className="container-custom flex items-center justify-between h-16">
           {/* Logo */}
           <Link href="/" className="flex items-center gap-2.5 flex-shrink-0">
-            <Image src="/logo.png" alt="Career Brownie" width={36} height={36} className="rounded-xl object-contain" />
+            <Image src="/logo.svg" alt="Career Brownie" width={36} height={36} className="rounded-xl object-contain" unoptimized />
             <span
               className={cn(
                 "font-black text-xl tracking-tight transition-colors",
@@ -194,7 +194,7 @@ export default function Header() {
             >
               <div className="flex items-center justify-between p-5 border-b border-slate-100">
                 <Link href="/" className="flex items-center gap-2">
-                  <Image src="/logo.png" alt="Career Brownie" width={32} height={32} className="rounded-lg object-contain" />
+                  <Image src="/logo.svg" alt="Career Brownie" width={32} height={32} className="rounded-lg object-contain" unoptimized />
                   <span className="font-black text-lg text-slate-900">
                     Career<span className="text-gradient"> Brownie</span>
                   </span>

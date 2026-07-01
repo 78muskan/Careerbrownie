@@ -71,7 +71,7 @@ export default function Footer() {
           {/* Brand column */}
           <div className="lg:col-span-2">
             <Link href="/" className="flex items-center gap-2.5 mb-5">
-              <Image src="/logo.png" alt="Career Brownie" width={40} height={40} className="rounded-xl object-contain" />
+              <Image src="/logo.svg" alt="Career Brownie" width={40} height={40} className="rounded-xl object-contain" unoptimized />
               <span className="font-black text-2xl text-white">
                 Career<span className="text-primary-400"> Brownie</span>
               </span>
