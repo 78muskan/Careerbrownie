@@ -230,7 +230,8 @@ class PublicChatView(APIView):
     """
     POST /api/v1/ai/public-chat/
     No authentication required — used by the public chat widget.
-    Calls Claude API directly; falls back to rule-based responses.
+    Uses keyword-based RAG over career_data.py to enrich every query,
+    then calls Claude Haiku. Falls back to rule-based if no API key.
     """
     permission_classes = []
     authentication_classes = []
@@ -248,10 +249,7 @@ class PublicChatView(APIView):
 class ChatView(APIView):
     """
     POST /api/v1/ai/chat/
-    Body: { "message": "...", "student_context": { "history": [...] } }
-
-    Forwards to the AI microservice. Falls back to direct Claude API call
-    if the microservice is unreachable.
+    Authenticated endpoint — forwards to AI microservice or falls back to Django RAG.
     """
     permission_classes = [IsAuthenticated]
 
@@ -265,7 +263,6 @@ class ChatView(APIView):
 
         student_context = request.data.get("student_context", {}) or {}
 
-        # Try forwarding to the AI microservice first
         try:
             ai_resp = http_requests.post(
                 f"{self.AI_SERVICE_URL}/chatbot/chat",
@@ -277,62 +274,105 @@ class ChatView(APIView):
         except Exception:
             pass
 
-        # Fallback: call Claude API directly from Django
         return self._direct_claude(message, student_context)
+
+    # ── RAG retrieval ─────────────────────────────────────────────────────────
+
+    @staticmethod
+    def _retrieve_context(message: str) -> str:
+        """
+        Keyword-based RAG: score every career in CAREERS against the user's query,
+        return the top matches as formatted context for the LLM.
+        """
+        msg = message.lower()
+        scored = []
+
+        for key, career in CAREERS.items():
+            score = 0
+            title_lower = career["title"].lower()
+
+            # Full title match is strongest signal
+            if title_lower in msg:
+                score += 12
+            # Individual title words (skip short filler words)
+            for word in title_lower.split():
+                if len(word) > 3 and word in msg:
+                    score += 3
+            # Career key (e.g. "data_scientist" → "data scientist")
+            if key.replace("_", " ") in msg:
+                score += 10
+            # Domain
+            if career["domain"].lower() in msg:
+                score += 2
+            # Skills
+            for skill in career.get("key_skills", []):
+                if skill.lower() in msg:
+                    score += 2
+            # Companies
+            for company in career.get("top_companies", []):
+                if company.lower() in msg:
+                    score += 1
+
+            if score > 0:
+                scored.append((score, key, career))
+
+        scored.sort(key=lambda x: x[0], reverse=True)
+        parts = []
+        for _, key, career in scored[:4]:
+            roadmap_hint = ""
+            if key in ROADMAP_TEMPLATES:
+                steps = [s["title"] for s in ROADMAP_TEMPLATES[key].get("3_months", [])[:2]]
+                roadmap_hint = f"\n  First steps: {'; '.join(steps)}" if steps else ""
+            parts.append(
+                f"{career['title']} ({career['domain']})\n"
+                f"  Salary: {career['avg_salary_india']} | Growth: {career['growth_rate']} | Demand: {career['demand']}\n"
+                f"  Education: {', '.join(career['education'][:2])}\n"
+                f"  Key Skills: {', '.join(career['key_skills'][:5])}\n"
+                f"  Top Companies: {', '.join(career['top_companies'][:4])}"
+                f"{roadmap_hint}"
+            )
+
+        return "\n\n".join(parts)
+
+    # ── Shared Claude call (public + authenticated fallback) ──────────────────
 
     @staticmethod
     def _direct_claude_static(message: str, history: list, api_key: str):
         if not api_key:
             return Response(ChatView._rule_based(message))
+
+        context = ChatView._retrieve_context(message)
+
         SYSTEM = (
-            "You are Career Brownie AI, an expert career counsellor for Indian students. "
-            "Help with career planning, college admissions, skill gaps, resume, and study abroad. "
-            "Be concise (2-3 paragraphs). End with: ACTIONS: [\"action1\", \"action2\", \"action3\"]"
+            "You are Career Brownie AI — India's most advanced AI career counsellor.\n"
+            "You serve Class 9-12 students, college students, graduates, and working professionals.\n\n"
+            "About Career Brownie:\n"
+            "• Founded by Muskan Sahani\n"
+            "• Contact: careerbrownie@gmail.com | +91 8171557334\n"
+            "• Services: Career Counselling (₹999+), University Admissions, Study Abroad, AI Career Guidance\n"
+            "• Free 30-min introductory session available\n\n"
+            "How to respond:\n"
+            "• Be warm, specific, and practical — always India-focused\n"
+            "• Quote real salary ranges, growth rates, entrance exams, and top companies when relevant\n"
+            "• Keep the reply to 2-4 short paragraphs\n"
+            "• End EVERY reply with exactly this line:\n"
+            "  ACTIONS: [\"specific action 1\", \"specific action 2\", \"specific action 3\"]\n"
+            "• Actions must be concrete next steps the user can take on Career Brownie\n"
+            "  (e.g., 'Book free 30-min session', 'Take career assessment', 'Explore data science roadmap')"
         )
+
+        user_content = message
+        if context:
+            user_content = (
+                f"[Career Knowledge Base — top matches for this query]\n{context}\n\n"
+                f"[Student question]\n{message}"
+            )
+
         messages = []
         for entry in (history or [])[-10:]:
             if entry.get("role") in ("user", "assistant") and entry.get("content"):
                 messages.append({"role": entry["role"], "content": entry["content"]})
-        messages.append({"role": "user", "content": message})
-        try:
-            resp = http_requests.post(
-                "https://api.anthropic.com/v1/messages",
-                headers={"x-api-key": api_key, "anthropic-version": "2023-06-01", "content-type": "application/json"},
-                json={"model": "claude-haiku-4-5-20251001", "max_tokens": 500, "system": SYSTEM, "messages": messages},
-                timeout=20,
-            )
-            resp.raise_for_status()
-            full_text = resp.json()["content"][0]["text"].strip()
-            reply, suggested_actions = full_text, []
-            if "ACTIONS:" in full_text:
-                parts = full_text.rsplit("ACTIONS:", 1)
-                reply = parts[0].strip()
-                try:
-                    suggested_actions = json.loads(parts[1].strip())
-                except Exception:
-                    pass
-            if not suggested_actions:
-                suggested_actions = ["Get career recommendations", "Take assessment", "Book consultation"]
-            return Response({"reply": reply, "suggested_actions": suggested_actions})
-        except Exception:
-            return Response(ChatView._rule_based(message))
-
-    def _direct_claude(self, message: str, student_context: dict):
-        api_key = self.ANTHROPIC_API_KEY
-        if not api_key:
-            return Response(self._rule_based(message))
-
-        SYSTEM = (
-            "You are Career Brownie AI, an expert career counsellor for Indian students. "
-            "Help with career planning, college admissions, skill gaps, resume, and study abroad. "
-            "Be concise (2-3 paragraphs). End with: ACTIONS: [\"action1\", \"action2\", \"action3\"]"
-        )
-
-        messages = []
-        for entry in (student_context.get("history") or [])[-10:]:
-            if entry.get("role") in ("user", "assistant") and entry.get("content"):
-                messages.append({"role": entry["role"], "content": entry["content"]})
-        messages.append({"role": "user", "content": message})
+        messages.append({"role": "user", "content": user_content})
 
         try:
             resp = http_requests.post(
@@ -343,12 +383,12 @@ class ChatView(APIView):
                     "content-type": "application/json",
                 },
                 json={
-                    "model": "claude-sonnet-4-6",
+                    "model": "claude-haiku-4-5-20251001",
                     "max_tokens": 600,
                     "system": SYSTEM,
                     "messages": messages,
                 },
-                timeout=20,
+                timeout=25,
             )
             resp.raise_for_status()
             full_text = resp.json()["content"][0]["text"].strip()
@@ -363,20 +403,105 @@ class ChatView(APIView):
                     pass
 
             if not suggested_actions:
-                suggested_actions = ["Get career recommendations", "Take assessment", "Book consultation"]
+                suggested_actions = ["Book free session", "Take career assessment", "Speak to a counsellor"]
 
-            return Response({"reply": reply, "suggested_actions": suggested_actions})
-
+            return Response({
+                "reply": reply,
+                "suggested_actions": suggested_actions,
+                "rag_docs": len(context.split("\n\n")) if context else 0,
+            })
         except Exception:
-            return Response(self._rule_based(message))
+            return Response(ChatView._rule_based(message))
+
+    def _direct_claude(self, message: str, student_context: dict):
+        history = student_context.get("history") or []
+        return self._direct_claude_static(message, history, self.ANTHROPIC_API_KEY)
+
+    # ── Rule-based fallback (no API key) ──────────────────────────────────────
 
     @staticmethod
     def _rule_based(message: str) -> dict:
         msg = message.lower()
-        if any(w in msg for w in ("college", "iit", "nit", "iim", "admission")):
-            return {"reply": "Share your stream, score, and preferred location — I'll suggest the best colleges for you.", "suggested_actions": ["Try college predictor", "Book counsellor session", "View requirements"]}
-        if any(w in msg for w in ("skill", "learn", "gap", "course")):
-            return {"reply": "Tell me your current skills and target career. I'll build a step-by-step learning plan.", "suggested_actions": ["Run skill gap analysis", "Generate roadmap", "Browse courses"]}
-        if any(w in msg for w in ("career", "job", "switch", "role")):
-            return {"reply": "Tell me your interests and strengths. I'll map the best career paths with salary and growth data for India.", "suggested_actions": ["Get career recommendations", "Generate roadmap", "Book consultation"]}
-        return {"reply": "I'm Career Brownie AI — I help with career planning, college admissions, skill gaps, and interview prep. What would you like to explore?", "suggested_actions": ["Get career recommendations", "Take assessment", "Book consultation"]}
+
+        # Try to pull a relevant career from the KB even without Claude
+        context = ChatView._retrieve_context(message)
+        if context:
+            first_career = context.split("\n")[0]
+            return {
+                "reply": (
+                    f"Great question! Based on what you asked, here's what I know about {first_career}.\n\n"
+                    f"{context}\n\n"
+                    "For personalised advice tailored to your scores and interests, "
+                    "book a free 30-minute session with one of our expert counsellors."
+                ),
+                "suggested_actions": ["Book free 30-min session", "Take career assessment", "Talk to a counsellor"],
+            }
+
+        if any(w in msg for w in ("college", "iit", "nit", "iim", "university", "admission", "cut-off", "cutoff")):
+            return {
+                "reply": (
+                    "To find the best colleges for you, I need to know your stream (PCM/PCB/Commerce/Arts), "
+                    "your expected score or percentile, and your preferred state or city.\n\n"
+                    "Share those details and I'll give you a personalised college shortlist. "
+                    "You can also book a free counselling session for a deep-dive."
+                ),
+                "suggested_actions": ["Share my score for college list", "Book free counselling session", "View top colleges by stream"],
+            }
+
+        if any(w in msg for w in ("skill", "learn", "course", "certificate", "gap", "upskill")):
+            return {
+                "reply": (
+                    "Building the right skills is the fastest way to accelerate your career. "
+                    "Tell me your current skills and your target role — I'll identify the exact gaps "
+                    "and recommend free + paid courses to fill them.\n\n"
+                    "Our AI generates a step-by-step 12-month learning roadmap personalised to you."
+                ),
+                "suggested_actions": ["Generate my skill gap report", "Get a personalised roadmap", "Browse recommended courses"],
+            }
+
+        if any(w in msg for w in ("salary", "package", "lpa", "ctc", "pay", "earn")):
+            return {
+                "reply": (
+                    "Salaries in India vary widely by role, company, and city. "
+                    "For example: Software Engineers earn ₹6–25 LPA, Data Scientists ₹8–30 LPA, "
+                    "MBAs ₹8–40 LPA, and Doctors ₹6–30 LPA.\n\n"
+                    "Tell me which career you're targeting and I'll give you detailed salary benchmarks."
+                ),
+                "suggested_actions": ["Compare salaries by career", "Explore high-growth careers", "Book salary negotiation session"],
+            }
+
+        if any(w in msg for w in ("abroad", "usa", "uk", "canada", "australia", "gre", "gmat", "ielts", "toefl")):
+            return {
+                "reply": (
+                    "We offer end-to-end study abroad support — from country and university selection "
+                    "to SOP writing, visa guidance, and scholarship applications.\n\n"
+                    "Popular destinations: USA (MS/MBA), UK (1-year Master's), Canada (PR pathway), "
+                    "Australia (skilled migration). Book a free session to discuss your profile."
+                ),
+                "suggested_actions": ["Book study abroad session", "Check eligibility for USA MS", "Find scholarships for my profile"],
+            }
+
+        if any(w in msg for w in ("career", "job", "switch", "role", "path", "future", "after 12", "after graduation")):
+            return {
+                "reply": (
+                    "Choosing the right career path is the most important decision you'll make. "
+                    "I can help you explore 50+ careers across Technology, Finance, Healthcare, Law, "
+                    "Design, and more — with real salary data and growth rates for India.\n\n"
+                    "Take our free career assessment to discover which paths match your interests and strengths."
+                ),
+                "suggested_actions": ["Take free career assessment", "Explore careers by domain", "Book a counselling session"],
+            }
+
+        return {
+            "reply": (
+                "Hi! I'm Career Brownie AI, your personal career counsellor for Indian students. "
+                "I can help with:\n"
+                "• Choosing the right career after Class 12 or graduation\n"
+                "• College admissions and cut-offs\n"
+                "• Skill gaps and learning roadmaps\n"
+                "• Study abroad guidance\n"
+                "• Salary benchmarks and job market trends\n\n"
+                "What would you like to explore today?"
+            ),
+            "suggested_actions": ["Explore careers", "Take career assessment", "Book free counselling session"],
+        }

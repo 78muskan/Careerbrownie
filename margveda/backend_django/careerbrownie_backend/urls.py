@@ -1,3 +1,4 @@
+import os
 from django.contrib import admin
 from django.urls import path, include
 from django.conf import settings
@@ -14,7 +15,14 @@ admin.site.index_title = "Career Intelligence Platform — Admin"
 @api_view(["GET"])
 @permission_classes([AllowAny])
 def health_check(request):
-    return Response({"status": "ok", "service": "Career Brownie Backend"})
+    return Response({
+        "status": "ok",
+        "service": "Career Brownie Backend",
+        "ai": {
+            "claude": "configured" if os.getenv("ANTHROPIC_API_KEY") else "missing ANTHROPIC_API_KEY",
+            "rag": "active",
+        },
+    })
 
 
 @api_view(["GET"])
