@@ -2,7 +2,7 @@ from datetime import datetime
 
 from pydantic import BaseModel, ConfigDict, Field
 
-from app.schemas.student import SessionResponse
+from app.schemas.session import SessionResponse
 
 
 class CounsellorProfileBase(BaseModel):

@@ -12,9 +12,11 @@ class GuidanceSession(Base):
     counsellor_id = Column(Integer, ForeignKey("users.id"), nullable=False, index=True)
     topic = Column(String(180), nullable=False)
     scheduled_at = Column(DateTime(timezone=True), nullable=True, index=True)
-    mode = Column(String(40), nullable=False, default="online")
+    duration_minutes = Column(Integer, nullable=False, default=45)
+    mode = Column(String(40), nullable=False, default="video")
     status = Column(String(40), nullable=False, default="requested", index=True)
     notes = Column(Text, nullable=True)
+    meeting_link = Column(String(255), nullable=True)
     created_at = Column(DateTime(timezone=True), server_default=func.now(), nullable=False)
     updated_at = Column(
         DateTime(timezone=True),

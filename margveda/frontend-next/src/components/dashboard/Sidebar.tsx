@@ -8,7 +8,7 @@ import {
   Sparkles, Map, Brain, Clock, BarChart2,
   Settings, LogOut, ChevronRight, FileText, Mic,
   GraduationCap, Award, Briefcase, SendHorizonal, Cpu,
-  TrendingUp, Users, School,
+  TrendingUp, Users, School, Mail,
 } from "lucide-react";
 
 const studentLinks = [
@@ -53,6 +53,9 @@ const recruiterLinks = [
 
 const adminLinks = [
   { href: "/admin/dashboard", icon: LayoutDashboard, label: "Dashboard" },
+  { href: "/admin/leads", icon: Users, label: "Leads" },
+  { href: "/admin/bookings", icon: Calendar, label: "Bookings" },
+  { href: "/admin/subscribers", icon: Mail, label: "Subscribers" },
   { href: "/admin/users", icon: User, label: "Users" },
   { href: "/admin/sessions", icon: Calendar, label: "Sessions" },
 ];

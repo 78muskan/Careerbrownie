@@ -56,7 +56,7 @@ export default function ContactPage() {
                 {[
                   { icon: Phone, label: "Phone", value: CONTACT_PHONE, href: `tel:${CONTACT_PHONE.replace(/\s/g, "")}` },
                   { icon: Mail, label: "Email", value: CONTACT_EMAIL, href: `mailto:${CONTACT_EMAIL}` },
-                  { icon: MapPin, label: "Office", value: "Koramangala, Bengaluru, Karnataka 560034", href: "#" },
+                  { icon: MapPin, label: "Location", value: "India 🇮🇳 — Remote-first", href: "#" },
                   { icon: Clock, label: "Hours", value: "Mon–Sat: 9 AM – 7 PM IST", href: "#" },
                 ].map((item) => {
                   const Icon = item.icon;

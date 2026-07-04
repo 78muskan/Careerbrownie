@@ -46,7 +46,7 @@ export default function Footer() {
             Ready to Find Your Perfect Career Path?
           </h2>
           <p className="text-white/80 mb-8 max-w-xl mx-auto">
-            Join 50,000+ students who found their direction with Career Brownie. Start with a free consultation today.
+            Built to help students make confident career decisions. Start with a free consultation today.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link
@@ -105,7 +105,7 @@ export default function Footer() {
                 <div className="w-8 h-8 rounded-lg bg-slate-800 flex items-center justify-center flex-shrink-0 mt-0.5">
                   <MapPin size={14} className="text-primary-400" />
                 </div>
-                <span>Career Brownie HQ, Koramangala, Bengaluru, Karnataka 560034</span>
+                <span>India 🇮🇳 — Remote-first</span>
               </div>
             </div>
 

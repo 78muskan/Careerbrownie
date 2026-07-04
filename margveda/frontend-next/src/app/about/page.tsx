@@ -15,10 +15,7 @@ const values = [
 ];
 
 const team = [
-  { name: "Aryan Kapoor", role: "Founder & CEO", bio: "IIT Bombay alum. Former McKinsey consultant. Obsessed with democratizing career intelligence.", emoji: "👨‍💼" },
-  { name: "Dr. Meera Pillai", role: "Head of Counselling", bio: "PhD in Educational Psychology. 18 years guiding students across India. Certified career coach.", emoji: "👩‍🏫" },
-  { name: "Rohan Gupta", role: "CTO & AI Lead", bio: "IIT Delhi + Stanford MS. Built AI systems at Google. Leading Career Brownie's career intelligence engine.", emoji: "👨‍💻" },
-  { name: "Priya Sharma", role: "Head of University Relations", bio: "Former admissions officer at top institutions. Deep relationships with 500+ universities globally.", emoji: "👩‍🎓" },
+  { name: "Muskan Sahani", role: "Founder & CEO", bio: "Founder of CareerBrownie. On a mission to make world-class career guidance accessible to every Indian student, regardless of background or location.", emoji: "👩‍💼" },
 ];
 
 export default function AboutPage() {
@@ -44,18 +41,18 @@ export default function AboutPage() {
         </div>
       </section>
 
-      {/* Stats */}
+      {/* Mission pillars */}
       <section className="py-16 bg-white border-b border-slate-100">
         <div className="container-custom">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
             {[
-              { value: "50,000+", label: "Students Guided" },
-              { value: "200+", label: "Expert Counsellors" },
-              { value: "500+", label: "University Partners" },
-              { value: "4.9★", label: "Average Rating" },
+              { value: "AI + Human", label: "Guidance Approach" },
+              { value: "Free", label: "First Consultation" },
+              { value: "Class 9–12+", label: "For All Students" },
+              { value: "2026", label: "Founded in India" },
             ].map((s) => (
               <div key={s.label}>
-                <p className="text-4xl font-black text-gradient mb-2">{s.value}</p>
+                <p className="text-3xl font-black text-gradient mb-2">{s.value}</p>
                 <p className="text-slate-500 text-sm font-medium">{s.label}</p>
               </div>
             ))}
@@ -76,26 +73,26 @@ export default function AboutPage() {
               </h2>
               <div className="space-y-4 text-slate-600 leading-relaxed">
                 <p>
-                  Over <strong>93% of Indian students</strong> lack access to professional career guidance. Most rely on family advice, peer pressure, or random internet searches to make decisions that will shape their entire lives.
+                  Many students across India make career decisions without access to structured guidance — relying on family advice, peer pressure, or internet searches for choices that will shape their entire lives.
                 </p>
                 <p>
-                  The result? <strong>40% of engineering graduates</strong> end up in roles unrelated to their degree. <strong>67% of professionals</strong> regret their career choices by age 30. Countless talented individuals are stuck in wrong careers because no one showed them a better path.
+                  The result is a significant mismatch between education and career outcomes. Talented individuals end up in roles they didn&apos;t choose intentionally, often discovering their real interests only years later — when changing course is harder.
                 </p>
                 <p>
-                  We founded Career Brownie in 2022 to fix this. By combining cutting-edge AI with expert human counselling, we&apos;ve created a platform that makes world-class career guidance affordable and accessible to every Indian.
+                  We founded CareerBrownie in 2026 to fix this. By combining AI with expert human counselling, we&apos;re building a platform that makes quality career guidance accessible to every Indian student, regardless of location or background.
                 </p>
               </div>
             </div>
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 gap-4">
               {[
-                { stat: "93%", desc: "Students lack proper career guidance", color: "bg-red-50 border-red-100" },
-                { stat: "40%", desc: "Engineering grads in wrong jobs", color: "bg-orange-50 border-orange-100" },
-                { stat: "₹2L+", desc: "Avg. salary increase after guidance", color: "bg-emerald-50 border-emerald-100" },
-                { stat: "95%", desc: "Students satisfied with Career Brownie", color: "bg-primary-50 border-primary-100" },
+                { icon: "🎯", desc: "Personalized guidance based on your actual strengths and interests", color: "bg-primary-50 border-primary-100" },
+                { icon: "🤖", desc: "AI-powered insights combined with experienced human counsellors", color: "bg-violet-50 border-violet-100" },
+                { icon: "💡", desc: "Real career data — salaries, job markets, college admissions, and more", color: "bg-emerald-50 border-emerald-100" },
+                { icon: "🆓", desc: "Start with a free consultation — no pressure, no commitment", color: "bg-amber-50 border-amber-100" },
               ].map((item) => (
-                <div key={item.stat} className={`${item.color} border rounded-2xl p-6 text-center`}>
-                  <p className="text-3xl font-black text-slate-900 mb-2">{item.stat}</p>
-                  <p className="text-sm text-slate-600">{item.desc}</p>
+                <div key={item.icon} className={`${item.color} border rounded-2xl px-5 py-4 flex items-start gap-4`}>
+                  <span className="text-2xl mt-0.5">{item.icon}</span>
+                  <p className="text-sm text-slate-700 leading-relaxed">{item.desc}</p>
                 </div>
               ))}
             </div>
@@ -136,18 +133,18 @@ export default function AboutPage() {
               Meet the <span className="text-gradient">Team</span>
             </h2>
             <p className="text-slate-500 max-w-xl mx-auto">
-              A team of educators, technologists, and career professionals united by a shared mission.
+              CareerBrownie is founder-led. We&apos;re growing — advisors and team members will be listed here as we bring them on board.
             </p>
           </div>
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="max-w-sm mx-auto">
             {team.map((member) => (
-              <div key={member.name} className="bg-white border border-slate-100 rounded-2xl p-6 card-hover text-center">
-                <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-primary-100 to-violet-100 flex items-center justify-center mx-auto mb-4 text-3xl">
+              <div key={member.name} className="bg-white border border-slate-100 rounded-2xl p-8 card-hover text-center">
+                <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-primary-100 to-violet-100 flex items-center justify-center mx-auto mb-5 text-4xl">
                   {member.emoji}
                 </div>
-                <h3 className="font-bold text-slate-900">{member.name}</h3>
+                <h3 className="font-bold text-slate-900 text-lg">{member.name}</h3>
                 <p className="text-primary-600 text-sm font-medium mb-3">{member.role}</p>
-                <p className="text-slate-500 text-xs leading-relaxed">{member.bio}</p>
+                <p className="text-slate-500 text-sm leading-relaxed">{member.bio}</p>
               </div>
             ))}
           </div>

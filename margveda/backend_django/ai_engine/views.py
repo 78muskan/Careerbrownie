@@ -265,8 +265,8 @@ class ChatView(APIView):
 
         try:
             ai_resp = http_requests.post(
-                f"{self.AI_SERVICE_URL}/chatbot/chat",
-                json={"message": message, "student_context": student_context},
+                f"{self.AI_SERVICE_URL}/chat",
+                json={"query": message, "student_profile": student_context, "history": []},
                 timeout=15,
             )
             ai_resp.raise_for_status()

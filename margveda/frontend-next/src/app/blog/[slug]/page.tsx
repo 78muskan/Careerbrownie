@@ -27,7 +27,7 @@ export default function BlogPostPage({ params }: { params: { slug: string } }) {
           <h1 className="text-3xl md:text-4xl font-black text-slate-900 mb-4">
             Top 20 High-Demand Careers in India for 2025
           </h1>
-          <p className="text-slate-500">Published on June 8, 2026 · By Dr. Ananya Singh, Senior Career Counsellor</p>
+          <p className="text-slate-500">Published on June 8, 2026 · By CareerBrownie Team</p>
         </div>
 
         {/* Article body */}

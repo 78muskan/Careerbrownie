@@ -41,9 +41,9 @@ export default function UniversityPartnersSection() {
             University Partners
           </span>
           <h2 className="section-heading text-slate-900 mb-3">
-            Trusted by <span className="text-gradient">500+ Universities</span>
+            Guidance for <span className="text-gradient">Universities Across India</span>
           </h2>
-          <p className="text-slate-500">Direct connections with top institutions across India and the world</p>
+          <p className="text-slate-500">Helping students explore and apply to institutions across India and abroad</p>
         </motion.div>
 
         {/* Indian Universities ticker */}

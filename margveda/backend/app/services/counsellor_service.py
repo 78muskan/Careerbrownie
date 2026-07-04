@@ -5,7 +5,7 @@ from app.models.counsellor import CounsellorProfile
 from app.models.session import GuidanceSession
 from app.models.user import User
 from app.schemas.counsellor import CounsellorDashboardResponse, CounsellorProfileUpdate
-from app.schemas.student import SessionStatusUpdate
+from app.schemas.session import SessionStatusUpdate
 
 
 class CounsellorService:
@@ -41,12 +41,8 @@ class CounsellorService:
     def get_dashboard(self, user: User) -> CounsellorDashboardResponse:
         profile = self.get_or_create_profile(user)
         sessions = self.list_sessions(user)
-        requested = [session for session in sessions if session.status == "requested"]
-        upcoming = [
-            session
-            for session in sessions
-            if session.status in {"requested", "confirmed"}
-        ][:5]
+        requested = [s for s in sessions if s.status == "requested"]
+        upcoming = [s for s in sessions if s.status in {"requested", "confirmed"}][:5]
         return CounsellorDashboardResponse(
             profile=profile,
             total_sessions=len(sessions),
@@ -74,7 +70,9 @@ class CounsellorService:
                 detail="Session not found",
             )
 
-        session.status = payload.status
+        session.status = payload.status.value
+        if payload.meeting_link is not None:
+            session.meeting_link = payload.meeting_link
         if payload.notes is not None:
             session.notes = payload.notes
         self.db.commit()

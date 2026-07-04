@@ -8,7 +8,7 @@ from app.schemas.counsellor import (
     CounsellorProfileResponse,
     CounsellorProfileUpdate,
 )
-from app.schemas.student import SessionResponse, SessionStatusUpdate
+from app.schemas.session import SessionResponse, SessionStatusUpdate
 from app.services.counsellor_service import CounsellorService
 
 

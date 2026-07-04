@@ -16,10 +16,9 @@ from app.schemas.recommendation import (
     SkillGapRequest,
     SkillGapResponse,
 )
+from app.schemas.session import SessionCreate, SessionResponse, SessionStatusUpdate
 from app.schemas.student import (
     SessionBookingRequest,
-    SessionResponse,
-    SessionStatusUpdate,
     StudentDashboardResponse,
     StudentProfileResponse,
     StudentProfileUpdate,
@@ -42,6 +41,7 @@ __all__ = [
     "RoadmapResponse",
     "SavedRoadmapResponse",
     "SessionBookingRequest",
+    "SessionCreate",
     "SessionResponse",
     "SessionStatusUpdate",
     "SkillGapRequest",

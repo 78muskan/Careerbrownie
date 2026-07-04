@@ -9,25 +9,16 @@ class RoadmapGenerateRequest(BaseModel):
     timeline_months: int = Field(default=12, ge=3, le=60)
 
 
-class RoadmapMilestone(BaseModel):
-    month: int
-    title: str
-    goals: list[str]
-    deliverable: str
-
-
 class RoadmapResponse(BaseModel):
+    """Serializes a saved CareerRoadmap ORM row."""
+
     model_config = ConfigDict(from_attributes=True)
 
     id: int
     student_id: int
     title: str
-    target_career: str
-    summary: str
-    milestones: list[RoadmapMilestone]
-    skills_to_build: list[str]
-    resources: list[str]
-    estimated_months: int
-    generated_by: str
+    career_goal: str
+    stages: list[dict]
+    status: str
     created_at: datetime
     updated_at: datetime

@@ -39,90 +39,21 @@ export const NAV_LINKS = [
 ];
 
 export const STATS = [
-  { value: "50,000+", label: "Students Guided" },
-  { value: "95%", label: "Success Rate" },
-  { value: "500+", label: "Universities" },
-  { value: "200+", label: "Expert Counsellors" },
+  { value: "AI + Human", label: "Guidance Approach" },
+  { value: "Free", label: "First Consultation" },
+  { value: "Class 9–12+", label: "For All Students" },
+  { value: "2026", label: "Founded in India" },
 ];
 
-export const TESTIMONIALS = [
-  {
-    id: 1,
-    name: "Priya Sharma",
-    role: "Engineering Student, IIT Delhi",
-    avatar: "/testimonials/priya.jpg",
-    content:
-      "Career Brownie's AI guidance helped me discover my passion for data science. The personalized roadmap was exactly what I needed to crack my dream internship at a top tech company.",
-    rating: 5,
-    course: "B.Tech Computer Science",
-  },
-  {
-    id: 2,
-    name: "Arjun Mehta",
-    role: "MBA Graduate, IIM Bangalore",
-    avatar: "/testimonials/arjun.jpg",
-    content:
-      "The counselling sessions were incredibly insightful. My counsellor understood my background deeply and helped me craft the perfect MBA application strategy.",
-    rating: 5,
-    course: "MBA Finance",
-  },
-  {
-    id: 3,
-    name: "Sneha Patel",
-    role: "Class 12 Student, Mumbai",
-    avatar: "/testimonials/sneha.jpg",
-    content:
-      "I was completely lost about what to study after 12th. Career Brownie's career assessment identified my strengths and opened up career paths I had never even considered!",
-    rating: 5,
-    course: "Pre-University",
-  },
-  {
-    id: 4,
-    name: "Rahul Verma",
-    role: "Software Engineer, Bangalore",
-    avatar: "/testimonials/rahul.jpg",
-    content:
-      "The skill gap analysis was a game-changer. It pinpointed exactly what I needed to learn to transition from a mid-level to senior role. Got promoted within 6 months!",
-    rating: 5,
-    course: "Career Transition",
-  },
-];
+export const TESTIMONIALS: {
+  id: number; name: string; role: string; avatar: string;
+  content: string; rating: number; course: string;
+}[] = [];
 
-export const COUNSELLORS = [
-  {
-    id: 1,
-    name: "Dr. Ananya Singh",
-    title: "Senior Career Counsellor",
-    specialization: "Engineering & Technology",
-    experience: "12 Years",
-    sessions: "2,400+",
-    rating: 4.9,
-    image: "/counsellors/ananya.jpg",
-    tags: ["IIT/NIT Admissions", "Tech Careers", "STEM Guidance"],
-  },
-  {
-    id: 2,
-    name: "Prof. Vikram Nair",
-    title: "University Admissions Expert",
-    specialization: "MBA & Business",
-    experience: "15 Years",
-    sessions: "3,200+",
-    rating: 4.8,
-    image: "/counsellors/vikram.jpg",
-    tags: ["IIM Admissions", "CAT Prep", "B-School Guidance"],
-  },
-  {
-    id: 3,
-    name: "Ms. Preethi Kumar",
-    title: "Study Abroad Specialist",
-    specialization: "International Education",
-    experience: "8 Years",
-    sessions: "1,800+",
-    rating: 4.9,
-    image: "/counsellors/preethi.jpg",
-    tags: ["USA Admissions", "UK Visas", "Scholarships"],
-  },
-];
+export const COUNSELLORS: {
+  id: number; name: string; title: string; specialization: string;
+  experience: string; sessions: string; rating: number; image: string; tags: string[];
+}[] = [];
 
 export const SERVICES_LIST = [
   {

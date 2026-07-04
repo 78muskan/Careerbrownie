@@ -52,7 +52,7 @@ export default function Header() {
           <div className="container-custom flex items-center justify-between">
             <p className="flex items-center gap-2">
               <Sparkles size={14} />
-              India&apos;s #1 AI-Powered Career Guidance Platform — Now Serving 50,000+ Students
+              India&apos;s AI-Powered Career Guidance Platform — Personalized for Every Student
             </p>
             <a
               href={`tel:${CONTACT_PHONE.replace(/\s/g, "")}`}

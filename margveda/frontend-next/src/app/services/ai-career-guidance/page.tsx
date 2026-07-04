@@ -33,8 +33,8 @@ export default function AiCareerGuidancePage() {
             India&apos;s Most Advanced AI Career Counsellor
           </h1>
           <p className="text-white/70 text-lg mb-8">
-            Available 24/7. Never judges. Endlessly patient. Our AI counsellor has helped
-            50,000+ students find their career path.
+            Available 24/7. Never judges. Endlessly patient. Ask anything about careers,
+            colleges, exams, or salaries — and get an honest, personalized answer.
           </p>
           <div className="flex gap-4 flex-wrap">
             <button

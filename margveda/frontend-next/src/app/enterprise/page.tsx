@@ -66,10 +66,10 @@ export default function EnterprisePage() {
       <section className="bg-indigo-600 py-16 px-6 text-white">
         <div className="max-w-4xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
           {[
-            { value: "500+", label: "Schools Onboarded" },
-            { value: "50,000+", label: "Students Guided" },
-            { value: "200+", label: "Recruiting Partners" },
-            { value: "94%", label: "Placement Rate" },
+            { value: "AI-Powered", label: "Career Guidance" },
+            { value: "Free", label: "Pilot Programme" },
+            { value: "India", label: "Student-Focused" },
+            { value: "2026", label: "Founded" },
           ].map(stat => (
             <div key={stat.label}>
               <div className="text-4xl font-bold mb-1">{stat.value}</div>

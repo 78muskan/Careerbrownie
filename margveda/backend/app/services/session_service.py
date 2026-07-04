@@ -3,7 +3,7 @@ from datetime import datetime, timezone
 from fastapi import HTTPException, status
 from sqlalchemy.orm import Session
 
-from app.models.session import SessionBooking
+from app.models.session import GuidanceSession
 from app.models.user import User
 from app.schemas.session import SessionCreate, SessionStatusUpdate
 
@@ -12,7 +12,7 @@ class SessionService:
     def __init__(self, db: Session) -> None:
         self.db = db
 
-    def book_session(self, student: User, payload: SessionCreate) -> SessionBooking:
+    def book_session(self, student: User, payload: SessionCreate) -> GuidanceSession:
         if student.role != "student":
             raise HTTPException(
                 status_code=status.HTTP_403_FORBIDDEN,
@@ -35,7 +35,7 @@ class SessionService:
             )
 
         self._ensure_future_time(payload.scheduled_at)
-        booking = SessionBooking(
+        booking = GuidanceSession(
             student_id=student.id,
             counsellor_id=counsellor.id,
             scheduled_at=payload.scheduled_at,
@@ -49,26 +49,26 @@ class SessionService:
         self.db.refresh(booking)
         return booking
 
-    def list_for_user(self, user: User) -> list[SessionBooking]:
-        query = self.db.query(SessionBooking)
+    def list_for_user(self, user: User) -> list[GuidanceSession]:
+        query = self.db.query(GuidanceSession)
         if user.role == "student":
-            query = query.filter(SessionBooking.student_id == user.id)
+            query = query.filter(GuidanceSession.student_id == user.id)
         elif user.role == "counsellor":
-            query = query.filter(SessionBooking.counsellor_id == user.id)
+            query = query.filter(GuidanceSession.counsellor_id == user.id)
         elif user.role != "admin":
             raise HTTPException(
                 status_code=status.HTTP_403_FORBIDDEN,
                 detail="Unsupported role",
             )
-        return query.order_by(SessionBooking.scheduled_at.desc()).all()
+        return query.order_by(GuidanceSession.scheduled_at.desc()).all()
 
     def update_status(
         self,
         session_id: int,
         actor: User,
         payload: SessionStatusUpdate,
-    ) -> SessionBooking:
-        booking = self.db.query(SessionBooking).filter(SessionBooking.id == session_id).first()
+    ) -> GuidanceSession:
+        booking = self.db.query(GuidanceSession).filter(GuidanceSession.id == session_id).first()
         if booking is None:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,

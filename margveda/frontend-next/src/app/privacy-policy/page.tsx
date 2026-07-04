@@ -44,7 +44,7 @@ export default function PrivacyPolicyPage() {
             },
             {
               title: "7. Contact",
-              content: "For privacy-related queries, contact our Data Protection Officer at privacy@careerbrownie.com or write to: Career Brownie Privacy Team, Koramangala, Bengaluru, Karnataka 560034.",
+              content: "For privacy-related queries, contact us at careerbrownie@gmail.com. We are a remote-first company based in India.",
             },
           ].map((section) => (
             <div key={section.title}>

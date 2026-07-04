@@ -1,62 +1,56 @@
-FROM python:3.12-slim
+# ── Multi-stage AI service build ──────────────────────────────────────────────
+# Stage 1: deps — install all python packages (PyTorch CPU first for layer caching)
+FROM python:3.12-slim AS builder
 
 WORKDIR /app
 
-ENV PYTHONDONTWRITEBYTECODE=1
-ENV PYTHONUNBUFFERED=1
-ENV PYTHONPATH=/app
-ENV HF_HOME=/app/.cache/huggingface
-ENV TRANSFORMERS_CACHE=/app/.cache/huggingface
-ENV PIP_DEFAULT_TIMEOUT=120
-ENV PIP_RETRIES=5
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1 \
+    PIP_DEFAULT_TIMEOUT=180 \
+    PIP_RETRIES=5
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
     build-essential curl && \
     rm -rf /var/lib/apt/lists/*
 
-# ── Stage 1: PyTorch CPU (large file from PyTorch CDN) ──────────────────────
-RUN pip install --no-cache-dir --timeout 180 --retries 5 \
-    --index-url https://download.pytorch.org/whl/cpu \
-    "torch>=2.4,<3"
+# PyTorch CPU (large wheel; separate layer to maximise cache hits)
+RUN pip install --no-cache-dir --index-url https://download.pytorch.org/whl/cpu \
+    "torch>=2.5,<3"
 
-# ── Stage 2: Web framework + HTTP ───────────────────────────────────────────
-RUN pip install --no-cache-dir --timeout 120 --retries 5 \
-    fastapi==0.115.0 \
-    uvicorn[standard]==0.30.6 \
-    python-multipart==0.0.12 \
-    pydantic==2.9.2 \
-    httpx==0.27.2
+# Install all AI service dependencies from requirements.txt
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
 
-# ── Stage 3: LLM clients ────────────────────────────────────────────────────
-RUN pip install --no-cache-dir --timeout 120 --retries 5 \
-    ollama==0.3.3 \
-    "anthropic>=0.40.0"
+# Pre-download embedding model weights (skip on offline builds)
+RUN python -c "from sentence_transformers import SentenceTransformer; SentenceTransformer('all-MiniLM-L6-v2')" || true
 
-# ── Stage 4: HuggingFace / NLP stack ────────────────────────────────────────
-RUN pip install --no-cache-dir --timeout 180 --retries 5 \
-    transformers==4.44.2
+# ── Stage 2: runtime — minimal image ─────────────────────────────────────────
+FROM python:3.12-slim
 
-RUN pip install --no-cache-dir --timeout 180 --retries 5 \
-    sentence-transformers==3.2.1
+WORKDIR /app
 
-RUN pip install --no-cache-dir --timeout 180 --retries 5 \
-    FlagEmbedding==1.3.4
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1 \
+    PYTHONPATH=/app \
+    HF_HOME=/app/.cache/huggingface \
+    TRANSFORMERS_CACHE=/app/.cache/huggingface
 
-# ── Stage 5: Vector store + cache + utilities ────────────────────────────────
-RUN pip install --no-cache-dir --timeout 120 --retries 5 \
-    qdrant-client==1.11.3 \
-    "redis[hiredis]==5.2.1" \
-    numpy==1.26.4
+RUN apt-get update && apt-get install -y --no-install-recommends curl && \
+    rm -rf /var/lib/apt/lists/*
 
+# Copy installed packages from builder
+COPY --from=builder /usr/local/lib/python3.12/site-packages /usr/local/lib/python3.12/site-packages
+COPY --from=builder /usr/local/bin /usr/local/bin
+
+# Copy application code
 COPY app ./app
 
-# Pre-bake models into image (|| true = skip if no internet during build)
-RUN python -c "from FlagEmbedding import BGEM3FlagModel; BGEM3FlagModel('BAAI/bge-m3', use_fp16=False)" || true
-RUN python -c "from FlagEmbedding import FlagReranker; FlagReranker('BAAI/bge-reranker-v2-m3')" || true
+# Copy pre-downloaded embedding model cache
+COPY --from=builder /app/.cache /app/.cache
 
 EXPOSE 9000
 
-HEALTHCHECK --interval=30s --timeout=10s --start-period=60s \
-    CMD curl -f http://localhost:9000/health || exit 1
+HEALTHCHECK --interval=30s --timeout=10s --start-period=60s --retries=3 \
+    CMD curl -sf http://localhost:9000/health || exit 1
 
 CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "9000"]

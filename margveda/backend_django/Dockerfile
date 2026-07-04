@@ -12,11 +12,12 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
     PORT=8080
 
 # Install deps first (cached layer — only re-runs if requirements.txt changes)
-COPY margveda/backend_django/requirements.txt .
+# Note: build context is ./backend_django, so files are at ./requirements.txt
+COPY requirements.txt .
 RUN pip install --prefer-binary --no-cache-dir -r requirements.txt
 
 # Copy app source
-COPY margveda/backend_django/ .
+COPY . .
 
 EXPOSE 8080
 

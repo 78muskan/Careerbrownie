@@ -3,9 +3,9 @@ from sqlalchemy.orm import Session
 
 from app.api.dependencies import get_db, require_roles
 from app.models.user import User
+from app.schemas.session import SessionResponse
 from app.schemas.student import (
     SessionBookingRequest,
-    SessionResponse,
     StudentDashboardResponse,
     StudentProfileResponse,
     StudentProfileUpdate,

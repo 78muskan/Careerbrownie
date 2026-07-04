@@ -2,13 +2,13 @@
 
 import { motion } from "framer-motion";
 import Link from "next/link";
-import { ArrowRight, Play, Star, Users, Award, TrendingUp } from "lucide-react";
+import { ArrowRight, Play } from "lucide-react";
 import { STATS } from "@/lib/constants";
 
 const floatingCards = [
-  { icon: "🎯", label: "AI Career Match", value: "98% Accuracy", color: "bg-violet-50 border-violet-100" },
-  { icon: "📈", label: "Avg Salary Boost", value: "+45% in 1 Year", color: "bg-emerald-50 border-emerald-100" },
-  { icon: "🏆", label: "Top Placements", value: "Google, IIM & More", color: "bg-amber-50 border-amber-100" },
+  { icon: "🎯", label: "AI Career Match", value: "Personalized", color: "bg-violet-50 border-violet-100" },
+  { icon: "📈", label: "Career Growth", value: "Guided Roadmap", color: "bg-emerald-50 border-emerald-100" },
+  { icon: "🏆", label: "Expert Guidance", value: "Human Counsellors", color: "bg-amber-50 border-amber-100" },
 ];
 
 export default function HeroSection() {
@@ -36,7 +36,7 @@ export default function HeroSection() {
             >
               <span className="w-2 h-2 bg-emerald-400 rounded-full animate-pulse" />
               <span className="text-white/90 text-sm font-medium">
-                India&apos;s #1 AI Career Platform — Trusted by 50,000+ Students
+                India&apos;s AI-Powered Career Platform — Built for Students &amp; Graduates
               </span>
             </motion.div>
 
@@ -112,32 +112,17 @@ export default function HeroSection() {
               </Link>
             </motion.div>
 
-            {/* Trust indicators */}
+            {/* Trust indicator */}
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ duration: 0.6, delay: 0.5 }}
-              className="flex items-center gap-4"
+              className="flex items-center gap-3"
             >
-              <div className="flex -space-x-2">
-                {[1, 2, 3, 4, 5].map((i) => (
-                  <div
-                    key={i}
-                    className="w-9 h-9 rounded-full border-2 border-primary-800 bg-gradient-to-br from-primary-400 to-violet-500 flex items-center justify-center text-white text-xs font-bold"
-                  >
-                    {["P", "A", "R", "S", "M"][i - 1]}
-                  </div>
-                ))}
+              <div className="w-9 h-9 rounded-full bg-emerald-400/20 border border-emerald-400/40 flex items-center justify-center">
+                <span className="text-emerald-300 text-sm">✓</span>
               </div>
-              <div>
-                <div className="flex items-center gap-1 mb-0.5">
-                  {[1, 2, 3, 4, 5].map((i) => (
-                    <Star key={i} size={12} className="fill-yellow-400 text-yellow-400" />
-                  ))}
-                  <span className="text-yellow-400 text-sm font-bold ml-1">4.9/5</span>
-                </div>
-                <p className="text-white/60 text-xs">Trusted by 50,000+ students across India</p>
-              </div>
+              <p className="text-white/60 text-sm">Start with a free consultation — no commitment required</p>
             </motion.div>
           </div>
 

@@ -1,5 +1,6 @@
 from sqlalchemy.orm import Session
 
+from app.models.college import College
 from app.models.counsellor import CounsellorProfile
 from app.models.roadmap import CareerRoadmap
 from app.models.session import GuidanceSession
@@ -18,6 +19,7 @@ class AdminService:
             "counsellors": self.db.query(CounsellorProfile).count(),
             "sessions": self.db.query(GuidanceSession).count(),
             "roadmaps": self.db.query(CareerRoadmap).count(),
+            "colleges": self.db.query(College).count(),
         }
 
     def list_users(self) -> list[User]:

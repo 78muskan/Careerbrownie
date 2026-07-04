@@ -38,10 +38,10 @@ class SessionResponse(BaseModel):
     id: int
     student_id: int
     counsellor_id: int
-    scheduled_at: datetime
+    scheduled_at: datetime | None
     duration_minutes: int
-    mode: SessionMode
-    status: SessionStatus
+    mode: str
+    status: str
     topic: str
     notes: str | None
     meeting_link: str | None
