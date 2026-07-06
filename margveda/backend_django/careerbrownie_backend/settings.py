@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     "blog",
     "counsellors",
     "ai_engine",
+    "apps.ai",          # CBES Volume 1 — CareerBrain AI Architecture
     "counsellor_portal",
     # Phase 5
     "resume_builder",
@@ -199,6 +200,18 @@ FRONTEND_URL = os.getenv("FRONTEND_URL", "http://localhost:3000")
 # ---- Redis / Celery (Phase 9) ----
 REDIS_URL = os.getenv("REDIS_URL", "redis://localhost:6379/0")
 
+CACHES = {
+    "default": {
+        "BACKEND": "django.core.cache.backends.redis.RedisCache",
+        "LOCATION": REDIS_URL,
+    }
+    if REDIS_URL != "redis://localhost:6379/0" or os.getenv("USE_REDIS_CACHE", "False") == "True"
+    else {
+        "BACKEND": "django.core.cache.backends.locmem.LocMemCache",
+        "LOCATION": "careerbrain",
+    }
+}
+
 CELERY_BROKER_URL = REDIS_URL
 CELERY_RESULT_BACKEND = REDIS_URL
 CELERY_ACCEPT_CONTENT = ["json"]
@@ -234,9 +247,17 @@ EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD", "")
 DEFAULT_FROM_EMAIL = os.getenv("DEFAULT_FROM_EMAIL", "Career Brownie <hello@careerbrownie.com>")
 ADMIN_EMAIL = os.getenv("ADMIN_EMAIL", "admin@careerbrownie.com")
 
-# ---- AI Service ----
+# ── CareerBrain (CBES Volume 1) ───────────────────────────────────────────────
 AI_SERVICE_URL = os.getenv("AI_SERVICE_URL", "http://localhost:9000")
 ANTHROPIC_API_KEY = os.getenv("ANTHROPIC_API_KEY", "")
+CLAUDE_MODEL = os.getenv("CLAUDE_MODEL", "claude-sonnet-4-6")
+OLLAMA_URL = os.getenv("OLLAMA_URL", "http://localhost:11434")
+OLLAMA_MODEL = os.getenv("OLLAMA_MODEL", "qwen2.5:7b")
+INTERNAL_API_KEY = os.getenv("INTERNAL_API_KEY", "change-me-before-production")
+
+# CareerBrain memory tuning
+BRAIN_CONV_MAX_TURNS = int(os.getenv("BRAIN_CONV_MAX_TURNS", "10"))
+BRAIN_CONV_TTL_SECS = int(os.getenv("BRAIN_CONV_TTL_SECS", "3600"))
 
 # ---- Production security (auto-applied when DEBUG=False) ----
 if not DEBUG:
